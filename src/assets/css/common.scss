@@ -1,0 +1,35 @@
+$background-color:#fff;
+$primary: #199ed9;
+$secondary: #d2791b;
+
+$text-primary:rgba(0,0,0,.87);
+$text-secondary:rgba(0, 0, 0, 0.6);
+$text-muted:rgba(0, 0, 0, 0.38);
+
+$separator-color: #979797;
+$success-color:#4caf50;
+$error-color: #b71c1c;
+$info-color:#2196f3;
+$warning-color:#FFC107;
+
+.serverless-bbs{
+  --bbs-background-color: #{$background-color};
+  --bbs-primary: #{$primary};
+  --bbs-secondary: #{$secondary};
+  --bbs-text-primary: #{$text-primary};
+  --bbs-text-secondary: #{$text-secondary};
+  --bbs-text-muted: #{$text-muted};
+  --bbs-separator-color: #{$separator-color};
+  --bbs-success-color: #{$success-color};
+  --bbs-error-color: #{$error-color};
+  --bbs-info-color: #{$info-color};
+  --bbs-warning-color: #{$warning-color};
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+
+
