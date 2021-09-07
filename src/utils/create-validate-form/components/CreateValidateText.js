@@ -22,7 +22,7 @@ class CreateValidateText extends CreateValidateElement{
     this.otpOptions=otpOptions
     this.init()
   }
-  
+
   insertElement($wrapper,$curEle,idx){
     let curOtpOptions=null
     let otpName=$curEle.attr('data-cvf-otp-name')

@@ -11,11 +11,11 @@ const src = path.join(__dirname, 'src')
 
 module.exports= {
   mode: 'production',
-  entry: path.join( src, 'react-valine.js'),
+  entry: path.join( src, 'index.js'),
   output: {
     path: path.join(__dirname, 'dist'),
-    filename:'react-valine.js',
-    library: "react-valine",
+    filename:'serverless-bbs.js',
+    library: "serverless-bbs",
     libraryTarget: 'umd',
   },
   optimization: {
@@ -68,8 +68,5 @@ module.exports= {
     // errors: true,
     // warnings: true,
     // timings: true,
-  },
-  node:{
-    child_process: 'empty'
   }
 };

@@ -1,7 +1,8 @@
 import App from "./App"
 import Vue from 'vue'
 import './assets/css/common.scss'
-
+import 'create-validate-form/dist/css/CreateValidateForm.css'
+window.$=require('jquery')
 
 
 let vm= new Vue({
@@ -9,5 +10,5 @@ let vm= new Vue({
   render: h => h(App)
 })
 window.vm=vm
-window.$=require('jquery')
+
 export default vm
