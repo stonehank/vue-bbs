@@ -28,7 +28,12 @@ class ValidateClass {
 
   validEle(dataObj) {
     if (!dataObj) return null
-    let {result:eleValue,idx:index}=dataObj
+    let eleValue=dataObj.$curEle.val()
+    if(eleValue !== dataObj.result){
+      dataObj.result=eleValue
+      dataObj.textShow=eleValue
+    }
+    let {idx:index}=dataObj
     if(!this.dirty[index]){
       this.isValidates[index] = null
       this.validate_render(dataObj,index)

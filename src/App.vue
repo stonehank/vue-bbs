@@ -2,22 +2,15 @@
     <section class="serverless-bbs">
 <!--        <ServerlessBBsCounter />-->
 <!--        <ServerlessBBsViewer />-->
-<!--        <ServerlessBBsPanel />-->
-        <TextareaInput ref="name-field" v-model="val" />
-        <Avatar />
+        <ServerlessBBsPanel />
     </section>
 </template>
 
 <script>
-    import TextFieldInput from "./components/commons/UI/TextFieldInput";
-    import TextareaInput from "./components/commons/UI/TextareaInput";
-    import Button from "./components/commons/UI/Button";
-    import PopupButton from "./components/commons/UI/PopupButton";
-    import EmojiList from "./components/commons/Emoji";
-    import Avatar from "./components/UserInfoInput/Avatar";
+    import ServerlessBBsPanel from "./components/ServerlessBBsPanel";
     export default {
         name: "App",
-        components: {Avatar, EmojiList, PopupButton, Button, TextareaInput, TextFieldInput},
+        components: {ServerlessBBsPanel},
         data(){
             return {
                 val:''
@@ -30,5 +23,8 @@
 </script>
 
 <style scoped>
-
+    .serverless-bbs{
+        max-width:992px;
+        margin:auto;
+    }
 </style>

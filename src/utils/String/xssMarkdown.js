@@ -1,6 +1,6 @@
-import XssFilter from './xssFilter'
+// import XssFilter from './xssFilter'
 import {escape} from './escape'
-
+const xss = require("xss");
 const marked = require('marked');
 
 const  hljs =require('highlight.js/lib/highlight');
@@ -45,7 +45,7 @@ function modify_hljs(createHljs){
 }
 
 function xssMarkdown(content){
-  return XssFilter(markdown(content))
+  return xss(markdown(content))
 }
 
 

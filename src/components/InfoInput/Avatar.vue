@@ -2,12 +2,12 @@
     <PopupButton color="error"
                  text
                  v-model="showPopup"
-                 style="padding-left:0;padding-right:0;opacity:1;"
+                 style="padding:0 0 16px 0;opacity:1;"
                  @before-open="updateAvatarList"
     >
         <img
                 class="bbs-avatar"
-                :src="avatarSrc"
+                :src="newAvatar"
                 alt=""
         />
         <template #popup-content>
@@ -31,8 +31,24 @@
         name: "Avatar",
         components: {PopupButton},
         props:{
+            avatar:String,
             email:String,
             name:String,
+            size:{
+                default:48
+            }
+        },
+        model:{
+            prop:'avatar',
+            event:'change'
+        },
+        watch:{
+            avatar(newV){
+                this.newAvatar=newV
+            },
+            newAvatar(newV){
+                this.$emit('change',newV)
+            }
         },
         computed:{
             emailSrc:function(){
@@ -42,8 +58,8 @@
             },
             nameSrc:function(){
                 return this.name
-                    ? `https://ui-avatars.com/api/?background=random&name=${this.name}&size=${this.size}`
-                    : `https://ui-avatars.com/api/?background=random&name=&size=${this.size}`
+                    ? `https://ui-avatars.com/api/?background=199ed9&color=fff&name=${this.name}&size=${this.size}`
+                    : `https://ui-avatars.com/api/?background=199ed9&color=fff&name=&size=${this.size}`
             }
         },
         data(){
@@ -51,15 +67,14 @@
                 showPopup:false,
                 avatarsList:[],
                 GRAVATAR_URL:'https://gravatar.loli.net/avatar',
-                avatarSrc:'',
-                size:64
+                newAvatar:this.avatar,
             }
         },
         created(){
             this.avatarsList=[this.emailSrc,this.nameSrc]
             let others=["mp", "identicon", "monsterid",  "retro", "robohash", "wavatar"].map(str=>`${this.GRAVATAR_URL}/?d=${str}&size=${this.size}`)
             this.avatarsList=this.avatarsList.concat(others)
-            this.avatarSrc=this.avatarsList[Math.floor(Math.random() * this.avatarsList.length)]
+            this.newAvatar=this.avatarsList[Math.floor(Math.random() * this.avatarsList.length)]
         },
         methods:{
             updateAvatarList(){
@@ -71,7 +86,7 @@
                 }
             },
             chooseAvatar(src){
-                this.avatarSrc=src
+                this.newAvatar=src
                 this.showPopup=false
             },
         }
@@ -81,7 +96,9 @@
 
 <style scoped lang="scss">
     .bbs-avatar{
-
+        border-radius: 6px;
+        width:48px;
+        height:48px;
     }
     .avatar-panel-box{
         text-align:justify;

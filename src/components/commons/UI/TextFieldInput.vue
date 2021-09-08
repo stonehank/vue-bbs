@@ -1,16 +1,19 @@
 <template>
-    <input
-            :ref="'text-field-'+uuid"
-            value=""
-            name="nickname"
-            v-model="newValue"
-            :placeholder="this.placeholder"
-            :data-cvf-label="this.label"
-    />
+    <div>
+        <input
+                :ref="'text-field-'+uuid"
+                value=""
+                name="nickname"
+                v-model="newValue"
+                :placeholder="this.placeholder"
+                :data-cvf-label="this.label"
+        />
+    </div>
 </template>
 
 <script>
     import CreateValidateText from '../../../utils/create-validate-form/components/CreateValidateText'
+    // import CreateValidateText from 'create-validate-form/dist/components/CreateValidateText'
     import {v4 as uuidv4} from 'uuid';
     export default {
         name: "TextFieldInput",
@@ -28,12 +31,16 @@
             },
             rules:{
                 default:()=>[v=>!!v || '昵称必须填写']
+            },
+            outlined:{
+                default:false
             }
         },
         data(){
             return {
                 newValue:this.value,
-                uuid:uuidv4()
+                uuid:uuidv4(),
+                root:null,
             }
         },
         model:{
@@ -51,7 +58,7 @@
         mounted(){
             this.root=new CreateValidateText({
                 ele:this.$refs['text-field-'+this.uuid],
-                material:false,
+                material:!this.outlined,
                 showSuccess:false,
                 rules:this.rules,
                 afterValid(data){
@@ -61,7 +68,7 @@
         },
         methods:{
             validate(){
-                this.root.validate()
+                return this.root.validate()
             }
         }
     }

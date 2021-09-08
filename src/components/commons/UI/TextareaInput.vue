@@ -11,6 +11,7 @@
 
 <script>
     import CreateValidateTextarea from '../../../utils/create-validate-form/components/CreateValidateTextarea'
+    // import CreateValidateTextarea from 'create-validate-form/dist/components/CreateValidateTextarea'
     import {v4 as uuidv4} from 'uuid';
     export default {
         name: "TextareaInput",
@@ -31,12 +32,16 @@
             },
             rules:{
                 default:()=>[v=>!!v || '内容不能为空']
+            },
+            outlined:{
+                default:true
             }
         },
         data(){
             return {
                 newValue:this.value,
                 uuid:uuidv4(),
+                root:null,
             }
         },
         model:{
@@ -54,7 +59,7 @@
         mounted(){
             this.root=new CreateValidateTextarea({
                 ele:this.$refs['textarea-'+this.uuid],
-                material:false,
+                material:!this.outlined,
                 showSuccess:false,
                 rules:this.rules,
                 afterValid(data){
@@ -64,7 +69,7 @@
         },
         methods:{
             validate(){
-                this.root.validate()
+                return this.root.validate()
             }
         }
     }

@@ -42,8 +42,11 @@ class CreateValidateElement extends ValidateClass{
   }
 
   validate(){
-    return this.validEle(this.elementData[0])
+    this.dirty[0]=true
+    let valid=this.validEle(this.elementData[0])
+    return valid!==false
   }
+
 
   val(){
     return this.elementData[0].result

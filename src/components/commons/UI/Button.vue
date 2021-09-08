@@ -31,13 +31,12 @@
         display: inline-block;
         background: #ccc;
         margin-bottom: 0;
-        font-weight: 400;
+        font-weight: normal;
         vertical-align: middle;
         touch-action: manipulation;
         cursor: pointer;
         white-space: nowrap;
         padding: 8px 16px;
-        font-size: 16px;
         letter-spacing: 1.25px;
         -webkit-user-select: none;
         -moz-user-select: none;

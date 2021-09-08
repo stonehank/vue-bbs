@@ -40,3 +40,21 @@ $warning-color:#FFC107;
   position:absolute;
 }
 
+.text-sm{
+  font-size:0.8rem;
+}
+.text-right{
+  text-align:right;
+}
+
+
+.text-muted{
+  color:var(--bbs-text-muted)
+}
+
+.mt-2{
+  margin-top:8px;
+}
+.cvf-fieldset-focus{
+  border-color:inherit !important;
+}
