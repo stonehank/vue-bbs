@@ -1,6 +1,6 @@
 import timeAgo from './timeAgo'
 import {getEmojiPrefix, calcValueAndPos, resolveTAB, highLightEle, bindATagSmoothScroll,
-  getCaretCoordinates,scrollElementsTo,calcScreenSizeText} from './DOM'
+  getCaretCoordinates,scrollToEle,calcScreenSizeText} from './DOM'
 import {contentAtVerify,linkVerify,emailVerify} from './Verify'
 import {replaceAtToTag,replaceExistEmoji,removeReplyAt,restoreReplyAt,parseToValidCommentAt,
   xssMarkdown,modify_hljs,escape,randUniqueString} from './String'
@@ -62,7 +62,7 @@ export {
   replaceAtToTag,replaceExistEmoji,removeReplyAt,restoreReplyAt,parseToValidCommentAt,xssMarkdown,modify_hljs,escape,
   randUniqueString,
   // DOM
-  getEmojiPrefix, calcValueAndPos, resolveTAB, highLightEle, bindATagSmoothScroll, getCaretCoordinates,scrollElementsTo,
+  getEmojiPrefix, calcValueAndPos, resolveTAB, highLightEle, bindATagSmoothScroll, getCaretCoordinates,scrollToEle,
   calcScreenSizeText,
 
 

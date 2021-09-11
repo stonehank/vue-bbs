@@ -1,6 +1,6 @@
 <template>
     <section>
-        <div class="bbs-input-box">
+        <div class="bbs-input-box" ref="bbs-input-box">
             <div class="bbs-name-avatar bbs-input">
                 <Avatar :email="email" :name="nickname" v-model="avatar" />
                 <NickName ref="nickname" style="flex:1;" v-model="nickname" />
@@ -9,11 +9,14 @@
             <Link ref="link" class="bbs-input" v-model="link" />
         </div>
         <MessageInput ref="message" v-model="message"/>
-        <ActionsController :message="message" :insertEmoji="insertEmoji"/>
+        <ActionsController :message="message"
+                           :insertEmoji="insertEmoji"
+                           :replyId="replyId"
+        />
         <div class="text-right mt-2">
             <Button color="success" @click="submit">提交</Button>
         </div>
-<!--        <CommentList />-->
+        <CommentList :startReply="startReply"/>
     </section>
 </template>
 
@@ -25,13 +28,15 @@
     import NickName from "./InfoInput/NickName";
     import Email from "./InfoInput/Email";
     import Link from "./InfoInput/Link";
-    import {calcValueAndPos} from "../utils/DOM";
+    import {calcValueAndPos, scrollToEle} from "../utils/DOM";
     import Button from "./commons/UI/Button";
+    import CommentList from "./CommentList/index";
+    import {getFromCache, setCache} from "../utils";
     export default {
         name: "ServerlessBBsPanel",
-        components: {Button, Link, Email, NickName, TextFieldInput, Avatar, ActionsController, MessageInput},
+        components: {CommentList, Button, Link, Email, NickName, TextFieldInput, Avatar, ActionsController, MessageInput},
         props:{
-            uuid:{
+            uniqStr:{
                 type:String,
                 default:window.location.pathname + window.location.hash
             }
@@ -44,14 +49,64 @@
                 email:'',
                 link:'',
                 message:'',
+                at:'',
                 rootId:null,
                 parentId:null,
                 replyId:null,
+                cacheKey:'serverless-bbs-vue-info',
             }
         },
+        watch:{
+            // 储存cookie
+            ...['avatar','nickname','email','link'].reduce((obj,prop2)=>{
+                if(typeof obj==='string'){
+                    let str=obj
+                    obj={
+                        [str]:function(newV){
+                            this.setCacheData(str,newV)
+                        }
+                    }
+                }
+                obj[prop2]=function(newV){
+                    this.setCacheData(prop2,newV)
+                }
+                return obj
+            }),
+            // 检查是否reply
+            message:function(newV){
+                if(this.at && this.replyId){
+                    if(!newV.startsWith(`@${this.at}`)){
+                        this.cancelReply()
+                    }
+                }
+            }
+        },
+        created(){
+            let cacheData=this.getCacheData()
+            this.nickname=cacheData.nickname
+            this.email=cacheData.email
+            this.link=cacheData.link
+            this.avatar=cacheData.avatar
+        },
         methods:{
+            setCacheData(prop,val){
+                let cacheData=this.getCacheData()
+                cacheData[prop]=val
+                setCache(this.cacheKey,cacheData)
+            },
+            getCacheData(){
+                let cacheData=getFromCache(this.cacheKey)
+                if(cacheData==null){
+                    cacheData={
+                        nickname:'',
+                        email:'',
+                        link:'',
+                        avatar:''
+                    }
+                }
+                return cacheData
+            },
             validate(){
-                console.log(this.$refs)
                 let {nickname, email, link, message}= this.$refs
                 return nickname.validate()
                     && email.validate()
@@ -59,7 +114,6 @@
                     && message.validate()
             },
             submit(){
-                console.log(this.validate())
                 this.submitLoading=true
                 let params={
                     avatar:this.avatar,
@@ -70,11 +124,34 @@
                     rootId:this.rootId,
                     parentId:this.parentId,
                     replyId:this.replyId,
-                    uuid:this.uuid
+                    uniqStr:this.uniqStr
                 }
+                this.validate()
             },
+
+            startReply(replyId,replyName,rootId){
+                this.at=replyName
+                this.replyId=replyId
+                this.rootId=rootId
+                this.message=`@${replyName} `+this.message
+                scrollToEle(this.$refs['bbs-input-box'],{
+                    highlight:false,
+                    smooth:true
+                })
+                this.$nextTick(function(){
+                    this.$refs.message.getElement().focus()
+                    this.$refs.message.validate()
+                })
+            },
+            cancelReply(){
+                this.at=''
+                this.replyId=null
+                this.message=this.message.replace(/^(@.*?\s|@.*?$)/,'')
+            },
+
             insertEmoji(emoji){
-                let ele=this.$refs.messageRef.$refs['message-field'].$el
+                let messageRef=this.$refs.message
+                let ele=messageRef.getElement()
                 let [newV,scrollTop,startPos]=calcValueAndPos(ele,emoji)
                 this.message=newV
                 this.$nextTick(function(){
@@ -82,8 +159,10 @@
                     ele.selectionEnd = startPos + emoji.length;
                     ele.scrollTop = scrollTop;
                     ele.focus();
+                    messageRef.validate()
                 })
-            }
+            },
+
         }
     }
 </script>

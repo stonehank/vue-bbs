@@ -1,8 +1,8 @@
 import App from "./App"
 import Vue from 'vue'
+import './assets/css/github-markdown.scss';
+import './assets/css/highlight.scss';
 import './assets/css/common.scss'
-import './assets/css/github-markdown.scss'
-import './assets/css/highlight.scss'
 import 'create-validate-form/dist/css/CreateValidateForm.css'
 window.$=require('jquery')
 

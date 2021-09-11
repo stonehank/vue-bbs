@@ -1,7 +1,7 @@
 import highLightEle from './highLightEle'
 import bindATagSmoothScroll from './bindATagSmoothScroll'
 import getCaretCoordinates from './textarea-creat'
-import scrollElementsTo from './scrollElementsTo'
+import scrollToEle from './scrollToEle'
 import calcScreenSizeText from './calcScreenSizeText'
 import {getEmojiPrefix,calcValueAndPos,resolveTAB} from './insertAtCaret'
 
@@ -14,6 +14,6 @@ export {
   highLightEle,
   bindATagSmoothScroll,
   getCaretCoordinates,
-  scrollElementsTo,
+  scrollToEle,
   calcScreenSizeText
 }

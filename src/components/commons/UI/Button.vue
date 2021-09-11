@@ -3,6 +3,7 @@
             :class="{
                 [color+'-color']:!!color,
                 'bbs-btn-text':text!==false,
+                'no-gap':dense!==false
             }"
             v-bind="$attrs"
             v-on="$listeners"
@@ -17,6 +18,7 @@
         props:{
             color:String,
             text:Boolean,
+            dense:Boolean,
         },
 
     }
@@ -46,6 +48,9 @@
         &:hover{
             opacity:0.85;
         }
+    }
+    .bbs-btn.no-gap{
+        padding:0;
     }
     .success-color{
         background-color: var(--bbs-success-color);

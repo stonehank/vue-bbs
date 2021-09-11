@@ -11,10 +11,11 @@
         name: "PreviewRender",
         props:{
             message:String,
+            replyId:String,
         },
         computed:{
             previewMessage(){
-                return xssMarkdown(replaceAtToTag(this.message))
+                return xssMarkdown(replaceAtToTag(this.message,this.replyId))
             }
         }
     }

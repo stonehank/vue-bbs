@@ -13,7 +13,11 @@
         },
         methods:{
             validate(){
+                console.log('validate')
                 return this.$refs[this.uuid].validate()
+            },
+            getElement(){
+                return this.$refs[this.uuid].$el
             }
         }
     }

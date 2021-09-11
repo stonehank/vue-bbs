@@ -74,6 +74,7 @@
             this.avatarsList=[this.emailSrc,this.nameSrc]
             let others=["mp", "identicon", "monsterid",  "retro", "robohash", "wavatar"].map(str=>`${this.GRAVATAR_URL}/?d=${str}&size=${this.size}`)
             this.avatarsList=this.avatarsList.concat(others)
+            if(this.newAvatar)return
             this.newAvatar=this.avatarsList[Math.floor(Math.random() * this.avatarsList.length)]
         },
         methods:{

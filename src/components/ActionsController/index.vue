@@ -21,7 +21,7 @@
             </div>
         </div>
         <CollapseTransition :duration="500" >
-            <PreviewRender v-show="preview" :message="message" />
+            <PreviewRender v-show="preview" :message="message" :replyId="replyId" />
         </CollapseTransition>
     </div>
 </template>
@@ -36,6 +36,7 @@
         components: {PreviewRender, Emoji, Button,CollapseTransition},
         props:{
             message:String,
+            replyId:String,
             insertEmoji:Function
         },
         data(){
