@@ -4,7 +4,7 @@ export default function scrollToEle(ele, {
     highlight=false,
     smooth=false
 }={}) {
-    if (!ele) return
+    if (!ele) return Promise.resolve(false)
     if (!(ele instanceof Element)) {
         ele = ele.$el
     }
@@ -12,14 +12,20 @@ export default function scrollToEle(ele, {
         throw new Error('Pass ele is not correct')
     }
     let parentNode = getScrollParent(ele)
-    while (parentNode) {
-        scrollTo(ele, parentNode, {
-            highlight,
-            smooth
-        })
-        ele = parentNode
-        parentNode = getScrollParent(parentNode)
-    }
+    return new Promise((res)=>{
+        while (parentNode) {
+            scrollTo(ele, parentNode, {
+                highlight,
+                smooth
+            })
+            ele = parentNode
+            parentNode = getScrollParent(parentNode)
+        }
+        setTimeout(()=>{
+            res(true)
+        },500)
+    })
+
 }
 
 

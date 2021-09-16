@@ -21,7 +21,10 @@
             </div>
         </div>
         <CollapseTransition :duration="500" >
-            <PreviewRender v-show="preview" :message="message" :replyId="replyId" />
+            <PreviewRender v-show="preview"
+                           :message="message"
+                           :at="at"
+                           :replyId="replyId" />
         </CollapseTransition>
     </div>
 </template>
@@ -37,6 +40,7 @@
         props:{
             message:String,
             replyId:String,
+            at:String,
             insertEmoji:Function
         },
         data(){

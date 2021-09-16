@@ -36,6 +36,7 @@ $warning-color:#FFC107;
   a{
     position: relative;
     text-decoration: none;
+    color:var(--bbs-info-color);
     &:hover{
       text-decoration: none;
     }
@@ -67,13 +68,25 @@ $warning-color:#FFC107;
     position:absolute;
   }
 
+  .text-md{
+    font-size: 1rem;
+  }
   .text-sm{
     font-size:0.8rem;
+  }
+  .text-left{
+    text-align:left;
+  }
+  .text-center{
+    text-align:center;
   }
   .text-right{
     text-align:right;
   }
 
+  .text-secondary{
+    color:var(--bbs-text-secondary)
+  }
 
   .text-muted{
     color:var(--bbs-text-muted)
@@ -95,6 +108,19 @@ $warning-color:#FFC107;
   }
   .mr-2{
     margin-right:8px;
+  }
+
+  .mr-4{
+    margin-right:16px;
+  }
+
+  .highlight-ele{
+    background-color: var(--bbs-primary) !important;
+    color:#fff;
+    *{
+      background-color: var(--bbs-primary) !important;
+      color:#fff;
+    }
   }
 
 }

@@ -1,28 +1,11 @@
 <template>
     <section class="serverless-bbs" style="margin-bottom:128px;">
-        <ServerlessBBsPanel />
-<!--        <div style="height:200px;overflow:auto">-->
-<!--            <div style="height:400px;overflow:auto">-->
-<!--                <div style="height:300px;overflow:auto"></div>-->
-<!--                <div style="height:600px;overflow:auto">-->
-
-<!--                    <div style="height:800px;overflow:auto">-->
-<!--                        <div style="height:1000px;overflow:auto">-->
-
-<!--                            <ServerlessBBsPanel />-->
-
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                    <div style="height:300px;overflow:auto"></div>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--            <div style="height:300px;overflow:auto"></div>-->
-<!--        </div>-->
-
+        <ServerlessBBsPanel :nest="winW<600 ? 1 : Infinity" :pageSize="5" />
     </section>
 </template>
 
 <script>
+    import {writeUserData} from '../draft/serve-test'
     import ServerlessBBsPanel from "./components/ServerlessBBsPanel";
     import MessageCard from "./components/CommentList/MessageCard";
     import CommentList from "./components/CommentList/index";
@@ -31,11 +14,16 @@
         components: {CommentList, MessageCard, ServerlessBBsPanel},
         data(){
             return {
-                val:''
+                val:'',
+                winW:window.innerWidth,
             }
         },
         mounted(){
             console.log(this.$refs['name-field'])
+            writeUserData(1,'aaa','aaa@email.com','')
+            window.addEventListener('resize',()=>{
+                this.winW=window.innerWidth
+            })
         }
     }
 </script>

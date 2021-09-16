@@ -10,8 +10,8 @@
 </template>
 
 <script>
-    import CreateValidateTextarea from '../../../utils/create-validate-form/components/CreateValidateTextarea'
-    // import CreateValidateTextarea from 'create-validate-form/dist/components/CreateValidateTextarea'
+    // import CreateValidateTextarea from '../../../utils/create-validate-form/components/CreateValidateTextarea'
+    import CreateValidateTextarea from 'create-validate-form/dist/components/CreateValidateTextarea'
     import {v4 as uuidv4} from 'uuid';
     export default {
         name: "TextareaInput",
@@ -51,6 +51,9 @@
         watch:{
             value(newV){
                 this.newValue=newV
+                this.$nextTick(function () {
+                    this.validate()
+                })
             },
             newValue(newV){
                 this.$emit('input',newV)

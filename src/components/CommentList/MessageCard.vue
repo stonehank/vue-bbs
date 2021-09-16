@@ -5,9 +5,10 @@
                 :small="small"
                 :details="details"
                 :startReply="startReply"
-        >
-            <slot></slot>
-        </MessageBody>
+                :loadList="loadList"
+                :curNest="curNest"
+                :maxNest="maxNest"
+        />
     </div>
 </template>
 
@@ -21,7 +22,9 @@
             details:Object,
             small:Boolean,
             curNest:Number,
+            maxNest:Number,
             startReply:Function,
+            loadList:Function,
         }
     }
 </script>

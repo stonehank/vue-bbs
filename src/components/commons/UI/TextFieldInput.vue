@@ -12,8 +12,8 @@
 </template>
 
 <script>
-    import CreateValidateText from '../../../utils/create-validate-form/components/CreateValidateText'
-    // import CreateValidateText from 'create-validate-form/dist/components/CreateValidateText'
+    // import CreateValidateText from '../../../utils/create-validate-form/components/CreateValidateText'
+    import CreateValidateText from 'create-validate-form/dist/components/CreateValidateText'
     import {v4 as uuidv4} from 'uuid';
     export default {
         name: "TextFieldInput",
@@ -50,6 +50,9 @@
         watch:{
             value(newV){
                 this.newValue=newV
+                this.$nextTick(function () {
+                    this.validate()
+                })
             },
             newValue(newV){
                 this.$emit('input',newV)

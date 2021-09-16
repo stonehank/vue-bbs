@@ -12,11 +12,17 @@
         <ActionsController :message="message"
                            :insertEmoji="insertEmoji"
                            :replyId="replyId"
+                           :at="at"
         />
         <div class="text-right mt-2">
             <Button color="success" @click="submit">提交</Button>
         </div>
-        <CommentList :startReply="startReply"/>
+        <CommentList
+                :startReply="startReply"
+                :uniqStr="uniqStr"
+                :maxNest="nest"
+                :pageSize="pageSize"
+        />
     </section>
 </template>
 
@@ -39,7 +45,15 @@
             uniqStr:{
                 type:String,
                 default:window.location.pathname + window.location.hash
-            }
+            },
+            pageSize:{
+                type:Number,
+                default:5
+            },
+            editable:Boolean,
+            nest:{
+                default:1
+            },
         },
         data(){
             return {
@@ -50,8 +64,8 @@
                 link:'',
                 message:'',
                 at:'',
+                submitNest:0,
                 rootId:null,
-                parentId:null,
                 replyId:null,
                 cacheKey:'serverless-bbs-vue-info',
             }
@@ -75,7 +89,7 @@
             // 检查是否reply
             message:function(newV){
                 if(this.at && this.replyId){
-                    if(!newV.startsWith(`@${this.at}`)){
+                    if(!newV.startsWith(`@${this.at} `)){
                         this.cancelReply()
                     }
                 }
@@ -120,33 +134,38 @@
                     nickname:this.nickname,
                     email:this.email,
                     link:this.link,
+                    nest:this.submitNest,
                     message:this.message,
                     rootId:this.rootId,
-                    parentId:this.parentId,
                     replyId:this.replyId,
                     uniqStr:this.uniqStr
                 }
                 this.validate()
+                console.log(params)
             },
 
-            startReply(replyId,replyName,rootId){
+            startReply({replyId,replyName,rootId,nest}){
                 this.at=replyName
                 this.replyId=replyId
                 this.rootId=rootId
+                this.submitNest=nest
                 this.message=`@${replyName} `+this.message
+                window.location.hash = "reply"
                 scrollToEle(this.$refs['bbs-input-box'],{
                     highlight:false,
                     smooth:true
-                })
-                this.$nextTick(function(){
+                }).then(()=>{
                     this.$refs.message.getElement().focus()
-                    this.$refs.message.validate()
                 })
             },
             cancelReply(){
+                // let matchReg=new RegExp(`^(@${this.at}\\s|@${this.at}$)`)
+                // console.log(this.message)
+                this.message=this.message.slice(this.at.length + 1)
                 this.at=''
                 this.replyId=null
-                this.message=this.message.replace(/^(@.*?\s|@.*?$)/,'')
+                this.rootId=''
+                this.submitNest=0
             },
 
             insertEmoji(emoji){
@@ -159,7 +178,6 @@
                     ele.selectionEnd = startPos + emoji.length;
                     ele.scrollTop = scrollTop;
                     ele.focus();
-                    messageRef.validate()
                 })
             },
 

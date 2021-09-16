@@ -12,7 +12,7 @@ export default function parseToValidCommentAt(commentObj) {
     if (!contentAtVerify(comment, at)) {
       return {comment,pid:'',at:''}
     } else {
-      return {comment:replaceAtToTag(comment, pid),pid,at}
+      return {comment:replaceAtToTag(comment, pid,at),pid,at}
     }
   }
   return commentObj

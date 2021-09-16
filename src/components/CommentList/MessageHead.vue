@@ -3,29 +3,35 @@
         <img
                 class="bbs-avatar"
                 alt="avatar"
-                src="https://gravatar.loli.net/avatar/e6d43dc0ada4c59f086fe9c032552bb6/?size=64"
+                :src="details.avatar"
         />
         <div class="bbs-msg-head-info">
-                <span class="bbs-nickname">
-                    <a href="https://stonehank.github.io/"
-                       target="_blank"
-                       rel="noopener noreferrer nofollow">
-                        stonehank
-                    </a>
-                </span>
+            <span class="bbs-nickname">
+                <a v-if="details.link"
+                   :href="details.link"
+                   target="_blank"
+                   rel="noopener noreferrer nofollow">
+                    {{details.nickname}}
+                </a>
+                <span v-else>{{details.nickname}}</span>
+            </span>
             <div class="bbs-msg-date">
-                <span>3 个月前</span>
+                <span>{{timeAgo(details.updatedAt)}}</span>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+    import {timeAgo} from "../../utils";
     export default {
         name: "MessageHead",
         props:{
             details:Object,
             small:Boolean,
+        },
+        computed:{
+            timeAgo:()=>timeAgo
         }
     }
 </script>
@@ -50,11 +56,11 @@
                 font-size: 14px;
                 color: var(--bbs-text-primary);
                 letter-spacing: 0.75px;
-                font-weight: bold;
                 margin-bottom: 4px;
                 display: block;
 
                 a {
+                    font-weight: bold;
                     color: inherit;
                 }
             }

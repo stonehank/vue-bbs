@@ -12,10 +12,11 @@
         props:{
             message:String,
             replyId:String,
+            at:String,
         },
         computed:{
             previewMessage(){
-                return xssMarkdown(replaceAtToTag(this.message,this.replyId))
+                return xssMarkdown(replaceAtToTag(this.message,this.replyId,this.at))
             }
         }
     }

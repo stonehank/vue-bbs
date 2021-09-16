@@ -5,5 +5,5 @@ export default function highLightEle(ele){
   contentEle.classList.add('highlight-ele')
   setTimeout(()=>{
     contentEle.classList.remove('highlight-ele')
-  },500)
+  },1000)
 }

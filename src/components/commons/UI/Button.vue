@@ -3,7 +3,8 @@
             :class="{
                 [color+'-color']:!!color,
                 'bbs-btn-text':text!==false,
-                'no-gap':dense!==false
+                'no-gap':dense!==false,
+                'bbs-disabled':disabled
             }"
             v-bind="$attrs"
             v-on="$listeners"
@@ -19,12 +20,18 @@
             color:String,
             text:Boolean,
             dense:Boolean,
+            disabled:Boolean
         },
 
     }
 </script>
 
 <style lang="scss" scoped>
+    .bbs-disabled{
+        user-select: none;
+        pointer-events: none;
+        cursor:initial;
+    }
     .bbs-btn{
         text-align: center;
         color: var(--bbs-text-primary);
@@ -45,9 +52,9 @@
         -ms-user-select: none;
         user-select: none;
         outline: none;
-        &:hover{
-            opacity:0.85;
-        }
+        /*&:hover{*/
+        /*    opacity:0.85;*/
+        /*}*/
     }
     .bbs-btn.no-gap{
         padding:0;
@@ -71,6 +78,9 @@
     .bbs-btn-text{
         background:transparent;
         border:none;
+        &.secondary-color{
+            color:var(--bbs-text-secondary);
+        }
         &.success-color{
            color: var(--bbs-success-color);
         }
