@@ -5,7 +5,9 @@
                 v-model="newVal"
                 :outlined="false"
                 label="个人网址"
-                :rules="[]"
+                :rules="[
+                    v=>(!v || linkVerify(v)) || '提供一个有效的URL'
+                ]"
         />
     </div>
 </template>

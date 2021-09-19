@@ -8,7 +8,7 @@
         <div class="bbs-msg-head-info">
             <span class="bbs-nickname">
                 <a v-if="details.link"
-                   :href="details.link"
+                   :href="absoluteLink"
                    target="_blank"
                    rel="noopener noreferrer nofollow">
                     {{details.nickname}}
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import {timeAgo} from "../../utils";
+    import {timeAgo} from "../../../utils";
     export default {
         name: "MessageHead",
         props:{
@@ -31,7 +31,17 @@
             small:Boolean,
         },
         computed:{
-            timeAgo:()=>timeAgo
+            timeAgo:()=>timeAgo,
+            absoluteLink:function () {
+                let link=this.details.link
+                let isAbs= link.startsWith('http') || link.startsWith('//')
+                if(!isAbs){
+                    link='https://'+link
+                }else if(link.startsWith('//')){
+                    link='https:'+link
+                }
+                return link
+            }
         }
     }
 </script>

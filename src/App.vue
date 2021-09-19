@@ -1,6 +1,12 @@
 <template>
     <section class="serverless-bbs" style="margin-bottom:128px;">
-        <ServerlessBBsPanel :nest="winW<600 ? 1 : Infinity" :pageSize="5" />
+        <span>评论数：<ServerlessBBsCounter /></span>
+        <span>页面浏览量：<ServerlessBBsPageView /></span>
+        <ServerlessBBsPanel
+                :nest="winW<600 ? 1 : Infinity"
+                :pageSize="50"
+                :editable="false"
+        />
     </section>
 </template>
 
@@ -9,9 +15,11 @@
     import ServerlessBBsPanel from "./components/ServerlessBBsPanel";
     import MessageCard from "./components/CommentList/MessageCard";
     import CommentList from "./components/CommentList/index";
+    import ServerlessBBsCounter from "./components/ServerlessBBsCounter";
+    import ServerlessBBsPageView from "./components/ServerlessBBsPageView";
     export default {
         name: "App",
-        components: {CommentList, MessageCard, ServerlessBBsPanel},
+        components: {ServerlessBBsPageView, ServerlessBBsCounter, CommentList, MessageCard, ServerlessBBsPanel},
         data(){
             return {
                 val:'',

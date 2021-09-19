@@ -71,13 +71,17 @@ function createReplyData(counts=500,times=2){
   return replyList
 }
 
-/*
-*
-*       rootId: '',
-      replyId: '',
-* */
 
+function fetchDataFromServer(params) {
+  /*
+    uniqStr  // 页面唯一值
+ */
+  return new Promise((res) => {
+    // res(allCommentData.length === 0 ? createNormalData(5,5,3) : [])
+    res(createNormalData(20,20,9))
+  })
+}
 
 module.exports={
-  createNormalData
+  fetchDataFromServer
 }

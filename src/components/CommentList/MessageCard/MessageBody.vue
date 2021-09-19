@@ -15,21 +15,17 @@
                     class="mr-4"
                     color="info"
                     @click="()=>startReply({
+                        rootId:details.rootId || details.objectId,
                         replyId:details.objectId,
                         replyName:details.nickname,
-                        rootId:details.rootId,
-                        nest:curNest + 1
                     })"
             >
                 回复
             </Button>
             <span v-if="canRenderReplyBtn" class="bbs-reply-btn">
-<!--                <span v-if="details.replyCounts===0" class="text-secondary text-sm">-->
-<!--                    无评论-->
-<!--                </span>-->
-                <Button dense v-if="details.replyCounts>0" @click="toggleReplyList" text>
+                <Button dense v-if="replyCounts>0" @click="toggleReplyList" text>
                     <span v-if="showReply">收起评论</span>
-                    <span v-else>{{details.replyCounts}}条评论</span>
+                    <span v-else>{{replyCounts}}条评论</span>
                 </Button>
             </span>
         </div>
@@ -42,11 +38,12 @@
                             :maxNest="maxNest"
                             :list="replyList"
                             :startReply="startReply"
+                            :needUpdateReplyId="needUpdateReplyId"
                             :loadList="loadList"
                 />
             </SlideYUpTransition>
             <MoreButton
-                    v-if="!replyLoading && details.replyCounts > replyList.length"
+                    v-if="!replyLoading && replyCounts > replyList.length"
                     align="left"
                     :simple="true"
                     :nodata="nodata"
@@ -58,22 +55,24 @@
 
 <script>
     import {SlideYUpTransition} from "vue2-transitions";
-    import Button from "../commons/UI/Button";
-    import MoreButton from "./MoreButton";
-    import {replaceAtToTag, xssMarkdown} from "../../utils/String";
+    import Button from "../../commons/UI/Button";
+    import MoreButton from "../MoreButton";
+    import {replaceAtToTag, xssMarkdown} from "../../../utils/String";
     import cloneDeep from "clone-deep";
-    import Loading from "../commons/Loading";
+    import Loading from "../../commons/Loading";
+    import {highLightEle, scrollToEle} from "../../../utils/DOM";
     export default {
         name: "MessageBody",
         components: {
             Loading,
             MoreButton,
-            ListRender:()=>import("./ListRender"),
+            ListRender:()=>import("../ListRender"),
             Button,
             SlideYUpTransition
         },
         props:{
             small:Boolean,
+            needUpdateReplyId:String,
             details:Object,
             startReply:Function,
             loadList:Function,
@@ -86,10 +85,37 @@
             },
             renderMessage(){
                 return xssMarkdown(replaceAtToTag(this.details.message,this.details.replyId,this.details.at))
+            }
+        },
+        watch:{
+            needUpdateReplyId(newReplyId){
+                if(newReplyId!==this.details.objectId)return
+                // console.log('needUpdate in reply')
+                let next
+                if(!this.showReply){
+                    next=this.toggleReplyList()
+                }else{
+                    next=this.loadData()
+                }
+                next.then(()=>{
+                    this.replyCounts++
+                    return scrollToEle(document.getElementById(this.details.objectId),{
+                        highlight:false,
+                        smooth:true
+                    })
+                })
+                .then(()=>{
+                    let replyId=this.replyList[0].objectId
+                    let ele=document.getElementById(replyId).getElementsByClassName('bbs-msg-body')[0]
+                    if(!ele)return
+                    highLightEle(ele)
+                })
+
             },
         },
         data(){
             return {
+                replyCounts:this.details.replyCounts || 0,
                 replyLoading:false,
                 showReply:false,
                 replyList:[],
@@ -102,22 +128,23 @@
                 if(this.showReply){
                     this.showReply=false
                     this.replyList=[]
+                    return Promise.resolve()
                 }else{
                     this.replyLoading=true
                     this.showReply=true
-                    this.fetchReplyList(this.replyPage)
+                    return this.loadData()
                     .finally(()=> this.replyLoading=false)
                 }
             },
-            fetchReplyList(page){
+            loadData(){
                 let params={
                     replyId:this.details.objectId,
-                    page:page,
+                    page:this.replyPage,
                     deepReply:this.curNest + 1 === this.maxNest,
                     deepReplyCounts:this.curNest + 2 >= this.maxNest,
                 }
                 return this.loadList(params)
-                .then(data=>{
+                .then(({data})=>{
                     console.log(data)
                     if(data.length===0){
                         this.nodata=true
@@ -128,7 +155,7 @@
             },
             fetchMore(){
                 this.replyPage+=1
-                return this.fetchReplyList(this.replyPage)
+                return this.loadData()
 
             }
         }

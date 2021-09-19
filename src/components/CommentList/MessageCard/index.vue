@@ -4,6 +4,7 @@
         <MessageBody
                 :small="small"
                 :details="details"
+                :needUpdateReplyId="needUpdateReplyId"
                 :startReply="startReply"
                 :loadList="loadList"
                 :curNest="curNest"
@@ -21,6 +22,7 @@
         props:{
             details:Object,
             small:Boolean,
+            needUpdateReplyId:String,
             curNest:Number,
             maxNest:Number,
             startReply:Function,

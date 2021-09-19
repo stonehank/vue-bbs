@@ -4,6 +4,7 @@
 
 <script>
     import {v4 as uuidv4} from 'uuid'
+    import {emailVerify,linkVerify} from '../../utils/Verify';
     export default {
         name: "Validate",
         data(){
@@ -11,13 +12,19 @@
                 uuid:uuidv4(),
             }
         },
+        computed:{
+            emailVerify:()=>emailVerify,
+            linkVerify:()=>linkVerify,
+        },
         methods:{
             validate(){
-                console.log('validate')
                 return this.$refs[this.uuid].validate()
             },
             getElement(){
                 return this.$refs[this.uuid].$el
+            },
+            reset(){
+                return this.$refs[this.uuid].reset()
             }
         }
     }

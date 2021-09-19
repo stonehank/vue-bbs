@@ -1,5 +1,8 @@
 <template>
-    <section>
+    <div class="text-center" v-if="initialLoading">
+        <Loading :size="64" />
+    </div>
+    <section v-else>
         <div class="bbs-input-box" ref="bbs-input-box">
             <div class="bbs-name-avatar bbs-input">
                 <Avatar :email="email" :name="nickname" v-model="avatar" />
@@ -18,10 +21,13 @@
             <Button color="success" @click="submit">提交</Button>
         </div>
         <CommentList
+                ref="bbs-comment-list"
+                :fetchResolveComments="fetchResolveComments"
                 :startReply="startReply"
                 :uniqStr="uniqStr"
                 :maxNest="nest"
                 :pageSize="pageSize"
+                :needUpdateReplyId="needUpdateReplyId"
         />
     </section>
 </template>
@@ -38,9 +44,15 @@
     import Button from "./commons/UI/Button";
     import CommentList from "./CommentList/index";
     import {getFromCache, setCache} from "../utils";
+    import CommentsResolve from "./DataFetchAndResolve/CommentsResolve";
+    import Loading from "./commons/Loading";
+    import cloneDeep from "clone-deep";
     export default {
         name: "ServerlessBBsPanel",
-        components: {CommentList, Button, Link, Email, NickName, TextFieldInput, Avatar, ActionsController, MessageInput},
+        extends:CommentsResolve,
+        components: {
+            Loading,
+            CommentList, Button, Link, Email, NickName, TextFieldInput, Avatar, ActionsController, MessageInput},
         props:{
             uniqStr:{
                 type:String,
@@ -57,6 +69,7 @@
         },
         data(){
             return {
+                needUpdateReplyId:null,
                 submitLoading:false,
                 avatar:'',
                 nickname:'',
@@ -64,9 +77,8 @@
                 link:'',
                 message:'',
                 at:'',
-                submitNest:0,
-                rootId:null,
-                replyId:null,
+                rootId:'',
+                replyId:'',
                 cacheKey:'serverless-bbs-vue-info',
             }
         },
@@ -93,7 +105,7 @@
                         this.cancelReply()
                     }
                 }
-            }
+            },
         },
         created(){
             let cacheData=this.getCacheData()
@@ -103,6 +115,14 @@
             this.avatar=cacheData.avatar
         },
         methods:{
+            reset(){
+                this.message=''
+                this.cancelReply()
+                setTimeout(()=>{
+                    let {message}= this.$refs
+                    message.reset()
+                },0)
+            },
             setCacheData(prop,val){
                 let cacheData=this.getCacheData()
                 cacheData[prop]=val
@@ -134,38 +154,55 @@
                     nickname:this.nickname,
                     email:this.email,
                     link:this.link,
-                    nest:this.submitNest,
                     message:this.message,
                     rootId:this.rootId,
                     replyId:this.replyId,
-                    uniqStr:this.uniqStr
+                    uniqStr:this.uniqStr,
+                    at:this.at
                 }
-                this.validate()
-                console.log(params)
+                if(!this.validate())return
+                this.uploadComments(params)
+                .then((data)=>{
+                    this.reset()
+                    if(!data.replyId){
+                        /* 更新List */
+                        let newList=cloneDeep(this.$refs['bbs-comment-list'].list)
+                        newList.unshift(data)
+                        this.$refs['bbs-comment-list'].list=newList
+                        this.$refs['bbs-comment-list'].total+=1
+                    }else{
+                        /* 更新reply */
+                        this.needUpdateReplyId=data.replyId
+                        setTimeout(()=>{
+                            this.needUpdateReplyId=null
+                        },0)
+                    }
+                })
+                .finally(()=>{
+                    this.submitLoading=false
+                })
             },
 
-            startReply({replyId,replyName,rootId,nest}){
+            startReply({rootId,replyId,replyName}){
                 this.at=replyName
                 this.replyId=replyId
                 this.rootId=rootId
-                this.submitNest=nest
                 this.message=`@${replyName} `+this.message
-                window.location.hash = "reply"
+                // window.location.hash = "reply"
                 scrollToEle(this.$refs['bbs-input-box'],{
                     highlight:false,
                     smooth:true
                 }).then(()=>{
+                    this.$refs.message.getElement().selectionStart=this.message.length
+                    this.$refs.message.getElement().selectionEnd=this.message.length
                     this.$refs.message.getElement().focus()
                 })
             },
             cancelReply(){
-                // let matchReg=new RegExp(`^(@${this.at}\\s|@${this.at}$)`)
-                // console.log(this.message)
                 this.message=this.message.slice(this.at.length + 1)
                 this.at=''
-                this.replyId=null
+                this.replyId=''
                 this.rootId=''
-                this.submitNest=0
             },
 
             insertEmoji(emoji){

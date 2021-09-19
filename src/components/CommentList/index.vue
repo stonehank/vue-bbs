@@ -4,18 +4,20 @@
     </div>
     <section v-else>
         <p class="text-md">
-            评论数：
-            <ServerlessBBsCounter :uniqStr="uniqStr" />
+            评论数：<span>{{total > 999 ? '999+' : total}}</span>
         </p>
         <ListRender
                 :curNest="0"
                 :maxNest="maxNest"
+                :needUpdateReplyId="needUpdateReplyId"
                 :list="list"
                 :startReply="startReply"
                 :loadList="loadList"
         />
+        <p class="text-center text-secondary" v-if="noMoreData && list.length===0">还没有任何评论~</p>
         <MoreButton
-                :nodata="nodata"
+                v-else
+                :noMoreData="noMoreData"
                 :loadMore="loadMore"
         />
     </section>
@@ -26,14 +28,12 @@
     import ListRender from "./ListRender";
     import Button from "../commons/UI/Button";
     import MoreButton from "./MoreButton";
-    import {fetchComments, fetchCounts} from "../../utils/API-Core";
-    import ServerlessBBsCounter from "../ServerlessBBsCounter";
     import cloneDeep from "clone-deep";
     import bindATagSmoothScroll from "../../utils/DOM/bindATagSmoothScroll";
     import Loading from "../commons/Loading";
     export default {
         name: "CommentList",
-        components: {Loading, ServerlessBBsCounter, MoreButton, Button, ListRender, MessageCard},
+        components: {Loading, MoreButton, Button, ListRender, MessageCard},
         props:{
             uniqStr:{
                 type:String,
@@ -44,12 +44,19 @@
                 default:10
             },
             editable:Boolean,
+            needUpdateReplyId:String,
             maxNest:{
                 default:1
             },
-            startReply:Function
+            startReply:Function,
+            fetchResolveComments:Function,
         },
         watch:{
+            needUpdateReplyId(newV){
+              console.log('needUpdate')
+                if(!newV)return
+              this.loadData()
+            },
             maxNest(newV){
                 console.log('nest change ',newV)
                 this.page=1
@@ -62,7 +69,8 @@
                 loading:true,
                 page:1,
                 list:[],
-                nodata:false,
+                total:null,
+                noMoreData:true,
             }
         },
         mounted(){
@@ -71,21 +79,33 @@
              * 获取数据-> count
              * 根据maxNest，editable, pageSize，分页方式进行渲染
              * */
-            this.loadData()
+            console.log(this)
+            this.init()
             document.addEventListener('click',bindATagSmoothScroll)
         },
         destroyed() {
             document.removeEventListener('click',bindATagSmoothScroll)
         },
         methods:{
-            loadData(){
+            init(){
+                console.log('start load list')
                 this.loading=true
-                this.loadList({
+                this.loadData()
+            },
+            loadData(){
+                return this.loadList({
                     page:this.page,
                     deepReply:this.maxNest <=0 ? 0 : null,
                     deepReplyCounts:this.maxNest <= 1,
                 })
-                .then((data)=>this.list=data)
+                .then(({data,total})=>{
+                    this.list=cloneDeep(data)
+                    this.total=this.$serverLessBBS.countMap.has(this.uniqStr)
+                        ? this.$serverLessBBS.countMap.get(this.uniqStr)
+                        : total
+                    // this.total=total
+                    this.noMoreData=data.length>=total
+                })
                 .finally(()=>this.loading=false)
             },
             loadList(parameters){
@@ -94,22 +114,11 @@
                     pageSize:this.pageSize,
                     ...parameters
                 }
-                return fetchComments(params)
+                return this.fetchResolveComments(params)
             },
             loadMore(){
                 this.page+=1
-                return this.loadList({
-                    page:this.page,
-                    deepReply:this.maxNest <=0 ? 0 : null,
-                    deepReplyCounts:this.maxNest <= 1
-                })
-                .then((data)=>{
-                    if(data.length===0){
-                        this.nodata=true
-                    }else{
-                        this.list=cloneDeep(data)
-                    }
-                })
+                return this.loadData()
             }
         }
     }

@@ -5,7 +5,9 @@
                 v-model="newVal"
                 :outlined="false"
                 label="邮箱"
-                :rules="[]"
+                :rules="[
+                    v=>(!v || emailVerify(v)) || '提供一个有效的email'
+                ]"
         />
     </div>
 </template>

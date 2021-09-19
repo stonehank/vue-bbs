@@ -71,6 +71,9 @@
             })
         },
         methods:{
+            reset(){
+                return this.root.reset()
+            },
             validate(){
                 return this.root.validate()
             }

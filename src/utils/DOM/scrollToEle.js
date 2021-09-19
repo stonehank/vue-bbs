@@ -35,6 +35,7 @@ function scrollTo(target, parent, {highlight,smooth}) {
         parent = window
     }
     if (highlight) highLightEle(target)
+    console.log('top',top,target,parent)
     try{
         parent.scrollTo({
             top: top,

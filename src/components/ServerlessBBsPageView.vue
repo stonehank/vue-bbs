@@ -4,12 +4,11 @@
 </template>
 
 <script>
-    // import {fetchCounts} from "../utils/API-Core";
     import DataFetch from "./DataFetchAndResolve/DataFetch";
     import Loading from "./commons/Loading";
 
     export default {
-        name: "ServerlessBBsCounter",
+        name: "ServerlessBBsPageView",
         components: {Loading},
         extends:DataFetch,
         props:{
@@ -24,8 +23,7 @@
         data(){
             return {
                 loading:true,
-                counts:0,
-                loopTimer:null
+                counts:0
             }
         },
         watch:{
@@ -38,14 +36,6 @@
                 }
             }
         },
-        mounted(){
-            this.loopTimer=setInterval(()=>{
-                this.counts=this.countMap.get(this.uniqStr)
-            },1000)
-        },
-        destroyed() {
-            clearInterval(this.loopTimer)
-        },
         methods:{
             init(){
                 this.loadCounter({rootId:''})
@@ -53,7 +43,7 @@
                 .finally(()=>this.loading=false)
             },
             loadCounter(){
-                return this.fetchCountFromServer(this.uniqStr)
+                return this.fetchViewFromServer(this.uniqStr,'Vue测试主页')
             },
         }
     }

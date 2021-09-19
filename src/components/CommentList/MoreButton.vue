@@ -2,13 +2,13 @@
     <div :class="'text-'+align" >
         <Loading v-if="moreLoading" :size="48" />
         <Button v-else
-                :disabled="nodata"
-                :text="nodata || simple"
-                :color="nodata ? 'secondary' : 'info'"
+                :disabled="noMoreData"
+                :text="noMoreData || simple"
+                :color="noMoreData ? 'secondary' : 'info'"
                 :dense="simple"
                 @click="load"
         >
-            {{ nodata ? '没有更多了' : '查看更多' }}
+            {{ noMoreData ? '没有更多了' : '查看更多' }}
         </Button>
     </div>
 </template>
@@ -20,7 +20,7 @@
         name: "MoreButton",
         components: {Loading, Button},
         props:{
-            nodata:Boolean,
+            noMoreData:Boolean,
             simple:Boolean,
             loadMore:Function,
             align:{
