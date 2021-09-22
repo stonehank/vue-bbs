@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TextFieldInput
+        <TextField
                 :ref="uuid"
                 v-model="newVal"
                 :outlined="false"
@@ -11,11 +11,11 @@
 </template>
 
 <script>
-    import TextFieldInput from "../commons/UI/TextField";
+    import TextField from "../commons/UI/TextField";
     import Validate from "./Validate";
     export default {
         name: "NickName",
-        components: {TextFieldInput},
+        components: {TextField},
         extends:Validate,
         props:{
             value:String,

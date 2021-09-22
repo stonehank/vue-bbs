@@ -28,6 +28,7 @@
                       :rows="rows"
                       :placeholder="placeholder"
                       v-model="newValue"
+                      v-bind="$attrs"
             />
 
             <input v-else
@@ -35,6 +36,7 @@
                    class="bbs-cus-valid-field"
                    :placeholder="placeholder"
                    v-model="newValue"
+                   v-bind="$attrs"
             />
         </div>
         <div class="error-msg">{{errorMsg}}</div>
@@ -45,7 +47,7 @@
     import {v4 as uuidv4} from 'uuid';
     import '../../../assets/css/textfield/common.scss'
     export default {
-        name: "TextareaInput",
+        name: "TextField",
         props: {
             value: {
                 default: null
@@ -89,7 +91,11 @@
             value(newV) {
                 this.newValue = newV
                 this.$nextTick(function () {
-                    this.handleBlur()
+                    if(!newV){
+                        this.validate()
+                    }else{
+                        this.handleBlur()
+                    }
                 })
             },
             newValue(newV) {
@@ -99,8 +105,11 @@
         mounted() {
             let labelEle=this.$refs['label-ref']
             let inputEle=this.$refs['input-ref']
-            // console.log(labelEle,labelEle.offsetWidth)
-            this.labelTextW = labelEle.offsetWidth
+            if(this.label===''){
+                this.labelTextW=0
+            }else{
+                this.labelTextW = labelEle.offsetWidth
+            }
             if (this.newValue) {
                 this.dirty=true
             }
@@ -161,7 +170,7 @@
                 return true
             },
             reset() {
-                this.newValue=null
+                this.newValue=''
                 this.error=false
                 this.errorMsg=null
                 this.dirty=false

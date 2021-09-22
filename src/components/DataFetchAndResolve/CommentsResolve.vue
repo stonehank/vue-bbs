@@ -36,10 +36,15 @@
                 })
             },
             insertInToList(list,data){
+                // 插入到对应的嵌套层，同时也要更新replyCounts数字
                 if(data.replyId){
                     let replyData=this.objectIdToData[data.replyId]
-                    if(replyData.replys==null)replyData.replys=[]
+                    if(replyData.replys==null){
+                        replyData.replys=[]
+                        replyData.replyCounts=0
+                    }
                     replyData.replys.unshift(data)
+                    replyData.replyCounts++
                 }else{
                     list.unshift(data)
                 }
@@ -67,21 +72,23 @@
                     let filterData = nestedData
                     if (replyId) {
                         filterData = this.objectIdToData[replyId].replys
-                        if (deepReply) {
+                        if (deepReply!=null) {
                             filterData = this.__deepSearchReply__(filterData)
+                        }
+                    }else{
+                        if (deepReply!=null) {
+                            filterData = Object.values(this.objectIdToData)
                         }
                     }
                     // 这里获取从0到当前page的所有评论
                     let result = cloneDeep(filterData.slice(0, pageSize * page))
-                    // console.log(cloneDeep(result))
                     if (deepReplyCounts) {
                         this.__deepSearchReplyCount__(result)
                     }
-                    // let result=cloneDeep(filterData.slice(pageSize * (page - 1), pageSize * page))
                     result = result.map(obj => {
                         obj.replys = null
                         return obj
-                    })
+                    }).sort((a,b)=>a.createdAt < b.createdAt ? 1 : -1)
 
                     return new Promise(res => {
                         setTimeout(() => {
@@ -89,7 +96,7 @@
                                 data:result,
                                 total:this.allCommentData.length
                             })
-                        }, 500)
+                        }, 200)
                     })
                 })
             },

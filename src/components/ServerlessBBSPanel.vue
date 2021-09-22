@@ -9,7 +9,7 @@
                 <NickName ref="nickname" style="flex:1;" v-model="nickname" />
             </div>
             <Email ref="email" class="bbs-input" v-model="email" />
-            <Link ref="link" class="bbs-input" v-model="link" />
+<!--            <Link ref="link" class="bbs-input" v-model="link" />-->
         </div>
         <MessageInput ref="message" v-model="message"/>
         <ActionsController :message="message"
@@ -25,9 +25,9 @@
                 :fetchResolveComments="fetchResolveComments"
                 :startReply="startReply"
                 :uniqStr="uniqStr"
-                :maxNest="nest"
+                :maxNest="+nest"
                 :pageSize="pageSize"
-                :needUpdateReplyId="needUpdateReplyId"
+                :needUpdateData="needUpdateData"
         />
     </section>
 </template>
@@ -45,7 +45,7 @@
     import Loading from "./commons/Loading"
     import CommentList from "./CommentList/index"
     import Button from "./commons/UI/Button"
-    import Link from "./InfoInput/Link"
+    // import Link from "./InfoInput/Link"
     import Email from "./InfoInput/Email"
     import NickName from "./InfoInput/NickName"
     import Avatar from "./InfoInput/Avatar"
@@ -58,7 +58,7 @@
             Loading,
             CommentList,
             Button,
-            Link,
+            // Link,
             Email,
             NickName,
             Avatar,
@@ -76,12 +76,14 @@
             },
             editable:Boolean,
             nest:{
+                type:[String,Number],
                 default:1
             },
+
         },
         data(){
             return {
-                needUpdateReplyId:null,
+                needUpdateData:null,
                 submitLoading:false,
                 avatar:'',
                 nickname:'',
@@ -187,9 +189,12 @@
                         this.$refs['bbs-comment-list'].total+=1
                     }else{
                         /* 更新reply */
-                        this.needUpdateReplyId=data.replyId
+                        this.needUpdateData={
+                            replyId:data.replyId,
+                            rootId:data.rootId
+                        }
                         setTimeout(()=>{
-                            this.needUpdateReplyId=null
+                            this.needUpdateData=null
                         },0)
                     }
                 })

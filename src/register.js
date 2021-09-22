@@ -11,5 +11,8 @@ export default function (Vue, options) {
         countMap:new Map(),
         pageviewMap:new Map(),
     }
+    if(Vue.prototype.$serverLessBBS!=null){
+        throw new Error('Should not register serverless-bbs twice.')
+    }
     Vue.prototype.$serverLessBBS=Object.assign(defaultOptions,options)
 }

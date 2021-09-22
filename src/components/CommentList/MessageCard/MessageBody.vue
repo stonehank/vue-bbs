@@ -38,7 +38,7 @@
                             :maxNest="maxNest"
                             :list="replyList"
                             :startReply="startReply"
-                            :needUpdateReplyId="needUpdateReplyId"
+                            :needUpdateData="needUpdateData"
                             :loadList="loadList"
                 />
             </SlideYUpTransition>
@@ -72,7 +72,7 @@
         },
         props:{
             small:Boolean,
-            needUpdateReplyId:String,
+            needUpdateData:Object,
             details:Object,
             startReply:Function,
             loadList:Function,
@@ -88,29 +88,26 @@
             }
         },
         watch:{
-            needUpdateReplyId(newReplyId){
-                if(newReplyId!==this.details.objectId)return
-                // console.log('needUpdate in reply')
-                let next
-                if(!this.showReply){
-                    next=this.toggleReplyList()
-                }else{
-                    next=this.loadData()
+            needUpdateData(newData){
+                if(!newData)return
+                let {replyId,rootId}=newData
+                // 不同祖先，彻底没关系
+                console.log(0,newData)
+                if(rootId!==(this.details.rootId || this.details.objectId))return
+                // 已经过了最大嵌套层，不必更新
+                console.log(1)
+                if(this.maxNest===this.curNest)return
+                // 下一层是最大嵌套数
+                console.log(2)
+                if(this.maxNest===this.curNest + 1){
+                    console.log(3)
+                    this.updateDataAfterReply()
+                }else if(replyId===this.details.objectId){
+                    console.log(4)
+                    // 不是最大嵌套层，查看replyId和objectId相等时更新
+                    this.updateDataAfterReply()
                 }
-                next.then(()=>{
-                    this.replyCounts++
-                    return scrollToEle(document.getElementById(this.details.objectId),{
-                        highlight:false,
-                        smooth:true
-                    })
-                })
-                .then(()=>{
-                    let replyId=this.replyList[0].objectId
-                    let ele=document.getElementById(replyId).getElementsByClassName('bbs-msg-body')[0]
-                    if(!ele)return
-                    highLightEle(ele)
-                })
-
+                console.log(5)
             },
         },
         data(){
@@ -157,6 +154,29 @@
                 this.replyPage+=1
                 return this.loadData()
 
+            },
+            updateDataAfterReply(){
+                console.log('update',this.showReply)
+                let next
+                if(!this.showReply){
+                    next=this.toggleReplyList()
+                }else{
+                    next=this.loadData()
+                }
+                next.then(()=>{
+                    this.replyCounts++
+                    return scrollToEle(document.getElementById(this.details.objectId),{
+                        highlight:false,
+                        smooth:true
+                    })
+                })
+                .then(()=>{
+                    let replyId=this.replyList[0].objectId
+                    console.log(this.replyList)
+                    let ele=document.getElementById(replyId).getElementsByClassName('bbs-msg-body')[0]
+                    if(!ele)return
+                    highLightEle(ele)
+                })
             }
         }
     }

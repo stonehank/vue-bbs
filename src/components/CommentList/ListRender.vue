@@ -9,7 +9,7 @@
                          :details="details"
                          :curNest="curNest"
                          :maxNest="maxNest"
-                         :needUpdateReplyId="needUpdateReplyId"
+                         :needUpdateData="needUpdateData"
                          :startReply="startReply"
                          :load-list="loadList"
             />
@@ -27,7 +27,7 @@
             list:Array,
             curNest:Number,
             maxNest:Number,
-            needUpdateReplyId:String,
+            needUpdateData:Object,
             startReply:Function,
             loadList:Function,
         }

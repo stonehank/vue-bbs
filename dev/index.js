@@ -14,7 +14,7 @@ import Vue from 'vue'
 //     CounterClass:"Counter_demo_vue",
 // })
 
-import register from '../src/register'
+import register from '../dist/register'
 register(Vue,{
     appId:"s8REl9WtWtOw7omr7frVIpMP-MdYXbMMI",
     appKey:"amadgvU7WzMYQ9eqMatTHLWM",

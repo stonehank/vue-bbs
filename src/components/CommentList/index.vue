@@ -9,7 +9,7 @@
         <ListRender
                 :curNest="0"
                 :maxNest="maxNest"
-                :needUpdateReplyId="needUpdateReplyId"
+                :needUpdateData="needUpdateData"
                 :list="list"
                 :startReply="startReply"
                 :loadList="loadList"
@@ -44,7 +44,7 @@
                 default:10
             },
             editable:Boolean,
-            needUpdateReplyId:String,
+            needUpdateData:Object,
             maxNest:{
                 default:1
             },
@@ -52,15 +52,16 @@
             fetchResolveComments:Function,
         },
         watch:{
-            needUpdateReplyId(newV){
+            needUpdateData(newV){
               console.log('needUpdate')
                 if(!newV)return
-              this.loadData()
+                this.loadData()
             },
             maxNest(newV){
                 console.log('nest change ',newV)
                 this.page=1
                 this.list=[]
+                this.loading=true
                 this.loadData()
             }
         },

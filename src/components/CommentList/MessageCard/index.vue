@@ -4,7 +4,7 @@
         <MessageBody
                 :small="small"
                 :details="details"
-                :needUpdateReplyId="needUpdateReplyId"
+                :needUpdateData="needUpdateData"
                 :startReply="startReply"
                 :loadList="loadList"
                 :curNest="curNest"
@@ -22,7 +22,7 @@
         props:{
             details:Object,
             small:Boolean,
-            needUpdateReplyId:String,
+            needUpdateData:Object,
             curNest:Number,
             maxNest:Number,
             startReply:Function,

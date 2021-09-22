@@ -1,9 +1,15 @@
 <template>
-    <section class="bbs-wrapper">
+    <section class="serverless-bbs bbs-wrapper">
+        <label>设置最大嵌套层</label>
+        <div style="display:flex;align-items: start;">
+            <TextField v-model="nest" class="mr-2" style="max-width:80px;" />
+            <Button class="mr-2" color="info" @click="nest+=1">+</Button>
+            <Button color="info" @click="nest-=1">-</Button>
+        </div>
         <span>评论数：<vue-bbs-counter /></span>
-<!--        <span>页面浏览量：<vue-bbs-pageview /></span>-->
+        <span>页面浏览量：<vue-bbs-pageview /></span>
         <vue-bbs
-                :nest="winW<600 ? 1 : Infinity"
+                :nest="nest"
                 :pageSize="50"
                 :editable="false"
         />
@@ -13,16 +19,21 @@
 <script>
     import VueBbsCounter from '../src/components/ServerlessBBSCounter'
     import VueBbs from '../src/components/ServerlessBBSPanel'
-    // import VueBbsCounter from '../dist/vue-bbs-counter'
-    // import VueBbs from '../dist/vue-bbs'
+    import VueBbsPageview from '../src/components/ServerlessBBSPageView'
+    import TextField from "../src/components/commons/UI/TextField";
+    import Button from "../src/components/commons/UI/Button";
     export default {
         name: "App",
         components:{
+            Button,
+            TextField,
             VueBbsCounter,
-            VueBbs
+            VueBbs,
+            VueBbsPageview
         },
         data(){
             return {
+                nest:2,
                 val:'',
                 winW:window.innerWidth,
             }
