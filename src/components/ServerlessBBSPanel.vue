@@ -2,7 +2,7 @@
     <div class="text-center" v-if="initialLoading">
         <Loading :size="64" />
     </div>
-    <section v-else>
+    <section class="serverless-bbs" v-else>
         <div class="bbs-input-box" ref="bbs-input-box">
             <div class="bbs-name-avatar bbs-input">
                 <Avatar :email="email" :name="nickname" v-model="avatar" />
@@ -33,26 +33,38 @@
 </template>
 
 <script>
-    import MessageInput from "./MessageInput/index";
-    import ActionsController from "./ActionsController/index";
-    import Avatar from "./InfoInput/Avatar";
-    import TextFieldInput from "./commons/UI/TextFieldInput";
-    import NickName from "./InfoInput/NickName";
-    import Email from "./InfoInput/Email";
-    import Link from "./InfoInput/Link";
+
     import {calcValueAndPos, scrollToEle} from "../utils/DOM";
-    import Button from "./commons/UI/Button";
-    import CommentList from "./CommentList/index";
     import {getFromCache, setCache} from "../utils";
     import CommentsResolve from "./DataFetchAndResolve/CommentsResolve";
-    import Loading from "./commons/Loading";
     import cloneDeep from "clone-deep";
+    import '../assets/css/common.scss'
+    import '../assets/css/highlight.scss'
+    import '../assets/css/github-markdown.scss'
+    import '../assets/css/textfield/common.scss'
+    import Loading from "./commons/Loading"
+    import CommentList from "./CommentList/index"
+    import Button from "./commons/UI/Button"
+    import Link from "./InfoInput/Link"
+    import Email from "./InfoInput/Email"
+    import NickName from "./InfoInput/NickName"
+    import Avatar from "./InfoInput/Avatar"
+    import ActionsController from "./ActionsController/index"
+    import MessageInput from "./MessageInput/index"
     export default {
-        name: "ServerlessBBsPanel",
+        name: "ServerlessBBSPanel",
         extends:CommentsResolve,
         components: {
             Loading,
-            CommentList, Button, Link, Email, NickName, TextFieldInput, Avatar, ActionsController, MessageInput},
+            CommentList,
+            Button,
+            Link,
+            Email,
+            NickName,
+            Avatar,
+            ActionsController,
+            MessageInput,
+        },
         props:{
             uniqStr:{
                 type:String,
@@ -163,6 +175,9 @@
                 if(!this.validate())return
                 this.uploadComments(params)
                 .then((data)=>{
+                    if(!data){
+                        return
+                    }
                     this.reset()
                     if(!data.replyId){
                         /* 更新List */

@@ -6,7 +6,7 @@
                 name="nickname"
                 v-model="newValue"
                 :placeholder="this.placeholder"
-                :data-cvf-label="this.label"
+                :data-bbs-cus-label="this.label"
         />
     </div>
 </template>

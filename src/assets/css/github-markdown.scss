@@ -141,7 +141,7 @@
 }
 
 .markdown-body a:hover {
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .markdown-body strong {
@@ -814,6 +814,10 @@
   line-height: 1.45;
   background-color: #f6f8fa;
   border-radius: 3px;
+}
+.markdown-body pre pre{
+  padding: 0;
+  margin: 0;
 }
 
 .markdown-body pre code {

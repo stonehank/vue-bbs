@@ -22,6 +22,7 @@
         </div>
         <CollapseTransition :duration="500" >
             <PreviewRender v-show="preview"
+                           :preview="preview"
                            :message="message"
                            :at="at"
                            :replyId="replyId" />

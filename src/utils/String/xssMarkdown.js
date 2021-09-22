@@ -45,7 +45,7 @@ function modify_hljs(createHljs){
 }
 
 function xssMarkdown(content){
-  return xss(markdown(content))
+  return markdown(xss(content))
 }
 
 

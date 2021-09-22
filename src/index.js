@@ -1,33 +1,27 @@
-import App from "./App"
-import Vue from 'vue'
-import './assets/css/github-markdown.scss';
-import './assets/css/highlight.scss';
-import './assets/css/common.scss'
-import 'create-validate-form/dist/css/CreateValidateForm.css'
-
-window.$=require('jquery')
+import ServerlessBBSPanel from "./components/ServerlessBBSPanel";
+import ServerlessBBSCounter from "./components/ServerlessBBSCounter";
+import ServerlessBBSPageView from "./components/ServerlessBBSPageView";
 
 
-
-Vue.prototype.$serverLessBBS={
-  appId:"s8REl9WtWtOw7omr7frVIpMP-MdYXbMMI",
-  appKey:"amadgvU7WzMYQ9eqMatTHLWM",
-  editMode:false,
-  // 传入后可减少第一次请求地址
-  serverURLs:"s8rel9wt.api.lncldglobal.com",
-  CommentClass:"Comment_demo_vue",
-  CounterClass:"Counter_demo_vue",
-  UserClass:"_User",
-  initialLoading:true,
-  countMap:new Map(),
-  pageviewMap:new Map()
+let install = function (Vue, options) {
+  let defaultOptions={
+    appId:null,
+    appKey:null,
+    editMode:false,
+    serverURLs:null,
+    CommentClass:"Comment",
+    CounterClass:"Counter",
+    UserClass:"_User",
+    initialLoading:true,
+    countMap:new Map(),
+    pageviewMap:new Map(),
+  }
+  Vue.prototype.$serverLessBBS=Object.assign(defaultOptions,options)
+  Vue.component('vue-bbs',ServerlessBBSPanel)
+  Vue.component('vue-bbs-counter',ServerlessBBSCounter)
+  Vue.component('vue-bbs-pageview',ServerlessBBSPageView)
 }
 
 
-let vm= new Vue({
-  el: '#app',
-  render: h => h(App)
-})
-window.vm=vm
 
-export default vm
+export default { install }

@@ -1,10 +1,10 @@
 const path = require('path');
-const src = path.join(__dirname, 'src')
+const dev = path.join(__dirname, 'dev')
 const moduleConfig  = require('./module.config')
 const pluginConfig  = require('./plugins.config')
 
 module.exports = {
-  entry: path.join( src, 'index.js'),
+  entry: path.join( dev, 'index.js'),
   output: {
     path: path.join(__dirname, 'demo'),
     filename:'index.js'
@@ -19,4 +19,8 @@ module.exports = {
     quiet:true,
     hot: true,
   } ,
+  // cache: {
+  //   type: 'filesystem',
+  //   maxAge: 5184000000,
+  // },
 };

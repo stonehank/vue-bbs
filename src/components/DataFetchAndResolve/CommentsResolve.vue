@@ -30,6 +30,7 @@
             uploadComments(uploadField){
                 return this.uploadMessageToServer(uploadField)
                 .then(data=>{
+                    if(!data)return null
                     this.insertInToList(this.allCommentData,data)
                     return data
                 })

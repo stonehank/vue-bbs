@@ -4,11 +4,12 @@
 </template>
 
 <script>
+    // import {fetchCounts} from "../utils/API-Core";
     import DataFetch from "./DataFetchAndResolve/DataFetch";
     import Loading from "./commons/Loading";
-
+    import '../assets/css/common.scss'
     export default {
-        name: "ServerlessBBsPageView",
+        name: "ServerlessBBSCounter",
         components: {Loading},
         extends:DataFetch,
         props:{
@@ -17,13 +18,14 @@
                 default:window.location.pathname + window.location.hash
             },
             size:{
-                default:20
+                default:18
             }
         },
         data(){
             return {
                 loading:true,
-                counts:0
+                counts:0,
+                loopTimer:null
             }
         },
         watch:{
@@ -36,6 +38,14 @@
                 }
             }
         },
+        mounted(){
+            this.loopTimer=setInterval(()=>{
+                this.counts=this.countMap.get(this.uniqStr)
+            },1000)
+        },
+        destroyed() {
+            clearInterval(this.loopTimer)
+        },
         methods:{
             init(){
                 this.loadCounter({rootId:''})
@@ -43,36 +53,8 @@
                 .finally(()=>this.loading=false)
             },
             loadCounter(){
-                return this.fetchViewFromServer(this.uniqStr,'Vue测试主页')
+                return this.fetchCountFromServer(this.uniqStr)
             },
         }
     }
 </script>
-
-<style scoped lang="scss">
-    .bbs-input-box{
-        display:flex;
-        align-items: flex-end;
-        justify-content: flex-start;
-        flex-flow:wrap;
-    }
-    .bbs-name-avatar{
-        display:flex;
-        align-items: flex-end;
-        justify-content: flex-start;
-        flex-flow:nowrap;
-    }
-    .bbs-input{
-        position: relative;
-        margin:0;
-        width:100%;
-        @media (min-width:768px){
-            flex:1;
-            min-width:200px;
-            margin:0 24px 0 0;
-            &:last-child{
-                margin:0;
-            }
-        }
-    }
-</style>

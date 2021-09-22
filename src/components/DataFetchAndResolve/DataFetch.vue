@@ -18,13 +18,13 @@
         methods: {
 
             fetchDataFromServer(uniqStr) {
-                return this.leancloud_fetchListFrom(uniqStr)
+                return this.leancloud_fetchCommentList(uniqStr)
             },
             fetchCountFromServer(uniqStr) {
                 return this.leancloud_fetchCommentCount(uniqStr)
             },
             fetchViewFromServer(uniqStr,title) {
-                return this.leancloud_getPageview(uniqStr,title)
+                return this.leancloud_getPageView(uniqStr,title)
             },
             uploadMessageToServer(uploadField){
                 return this.leanCloud_uploadComment(uploadField)

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <TextareaInput
+        <TextField
                 :rows="5"
                 :ref="uuid"
                 label="说点什么吧"
@@ -12,12 +12,12 @@
 </template>
 
 <script>
-    import TextareaInput from "../commons/UI/TextareaInput";
+    import TextField from "../commons/UI/TextField";
     import Validate from "../InfoInput/Validate";
     export default {
         name: "MessageInput",
         extends:Validate,
-        components: {TextareaInput},
+        components: {TextField},
         props:{
             value:String,
         },

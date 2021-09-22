@@ -13,7 +13,7 @@
 </template>
 
 <script>
-    import TextFieldInput from "../commons/UI/TextFieldInput";
+    import TextFieldInput from "../commons/UI/TextField";
     import Validate from "./Validate";
     export default {
         name: "Link",

@@ -24,43 +24,23 @@ module.exports = function moduleConfig(isDevelopment) {
             {
                 test: /\.css$/,
                 use: [
-                    "vue-style-loader",
-                    "style-loader",
-                    "css-loader",
+                    'vue-style-loader',
                     {
-                        loader: 'postcss-loader',
-                        options: {
-                            ident: 'postcss',
-                            plugins: () => [
-                                require('postcss-flexbugs-fixes'),
-                                require('postcss-preset-env')({
-                                    stage: 3,
-                                }),
-                            ],
-                        },
-                    },
-                ]
+                        loader: 'css-loader',
+                    }
+                ],
+                sideEffects:true
             },
             {
                 test: /\.scss$/,
                 use: [
-                    "vue-style-loader",
-                    "style-loader",
-                    "css-loader",
+                    'vue-style-loader',
                     {
-                        loader: 'postcss-loader',
-                        options: {
-                            ident: 'postcss',
-                            plugins: () => [
-                                require('postcss-flexbugs-fixes'),
-                                require('postcss-preset-env')({
-                                    stage: 3,
-                                }),
-                            ],
-                        },
+                        loader: 'css-loader',
                     },
-                    "sass-loader"
-                ]
+                    'sass-loader'
+                ],
+                sideEffects:true
             },
             {
                 test: /\.html$/,

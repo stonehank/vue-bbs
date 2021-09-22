@@ -5,7 +5,7 @@
             v-model="newValue"
             :rows="this.rows"
             :placeholder="this.placeholder"
-            :data-cvf-label="this.label"
+            :data-bbs-cus-label="this.label"
     ></textarea>
 </template>
 

@@ -1,5 +1,6 @@
 <template>
-    <div class="markdown-body bbs-preview-render"
+    <div
+         class="markdown-body bbs-preview-render"
          v-html="previewMessage.trim()==='' ? `<span class='text-muted'>无内容</span>` : previewMessage"
     >
     </div>
@@ -10,12 +11,14 @@
     export default {
         name: "PreviewRender",
         props:{
+            preview:Boolean,
             message:String,
             replyId:String,
             at:String,
         },
         computed:{
             previewMessage(){
+                if(!this.preview)return
                 return xssMarkdown(replaceAtToTag(this.message,this.replyId,this.at))
             }
         }

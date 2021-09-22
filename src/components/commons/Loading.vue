@@ -1,5 +1,5 @@
 <template>
-    <div class="lds-ring" :style="{
+    <div class="lds-ring serverless-bbs" :style="{
         width:size + 'px',
         height:size + 'px',
     }">
@@ -35,7 +35,7 @@
         width: 80%;
         height: 80%;
         margin: 10%;
-        border: 4px solid var(--bbs-primary);
+        border: 3px solid var(--bbs-primary);
         border-radius: 50%;
         animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
         border-color: var(--bbs-primary) transparent transparent transparent;

@@ -60,10 +60,10 @@
             }
         },
         mounted(){
-            $(window).on('click',(this.hide));
+            document.documentElement.addEventListener('click',this.hide)
         },
         destroyed() {
-            $(window).off('click',(this.hide))
+            document.documentElement.removeEventListener('click',this.hide)
         },
         methods:{
             hide(){
@@ -82,8 +82,11 @@
             },
             calcPopupPos(){
                 let {top,left,height:btnH, width:btnW}=this.$refs[this.btnUuid].$el.getBoundingClientRect()
-                let popW=$(this.$refs[this.uuid]).width()
-                let popH=$(this.$refs[this.uuid]).height()
+                let popEle=this.$refs[this.uuid]
+                popEle.style.display='block'
+                let popW=popEle.offsetWidth
+                let popH=popEle.offsetHeight
+                popEle.style.display='none'
                 let fromTop=top - 4
                 let fromBottom=window.innerHeight - top - btnH - 4
                 let fromLeft=left + btnW
@@ -118,11 +121,12 @@
 <style scoped>
     .bbs-popup-box{
         position:fixed;
-        border:1px solid var(--bbs-separator-color);
-        background: var(--bbs-background-color);
+        /*border:1px solid var(--bbs-separator-color);*/
+        background: var(--bbs-separator-background);
         border-radius:6px;
         min-width:64px;
         min-height:64px;
+        padding:4px 0;
         z-index: 99;
     }
 </style>

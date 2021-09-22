@@ -6,7 +6,8 @@ $text-primary:rgba(0,0,0,.87);
 $text-secondary:rgba(0, 0, 0, 0.6);
 $text-muted:rgba(0, 0, 0, 0.18);
 
-$separator-color: #979797;
+$separator-color: #c1c1c1;
+$separator-background: #f1f1f1;
 $success-color:#4caf50;
 $error-color: #b71c1c;
 $info-color:#2196f3;
@@ -20,6 +21,7 @@ $warning-color:#FFC107;
   --bbs-text-secondary: #{$text-secondary};
   --bbs-text-muted: #{$text-muted};
   --bbs-separator-color: #{$separator-color};
+  --bbs-separator-background: #{$separator-background};
   --bbs-success-color: #{$success-color};
   --bbs-error-color: #{$error-color};
   --bbs-info-color: #{$info-color};
@@ -92,9 +94,9 @@ $warning-color:#FFC107;
     color:var(--bbs-text-muted)
   }
 
-  .cvf-fieldset-focus{
-    border-color:inherit !important;
-  }
+  //.bbs-cus-fieldset-focus{
+  //  border-color:inherit !important;
+  //}
 
   .pl-1{
     padding-left:4px;

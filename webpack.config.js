@@ -11,10 +11,16 @@ const src = path.join(__dirname, 'src')
 
 module.exports= {
   mode: 'production',
-  entry: path.join( src, 'index.js'),
+  entry: {
+    index:path.join( src, 'index.js'),
+    register:path.join( src, 'register.js'),
+    'vue-bbs':path.join( src, 'components/ServerlessBBSPanel.vue'),
+    'vue-bbs-counter':path.join( src, 'components/ServerlessBBSCounter.vue'),
+    'vue-bbs-pageview':path.join( src, 'components/ServerlessBBSPageView.vue')
+  },
   output: {
     path: path.join(__dirname, 'dist'),
-    filename:'serverless-bbs.js',
+    filename:'[name].js',
     library: "serverless-bbs",
     libraryTarget: 'umd',
   },
@@ -22,6 +28,7 @@ module.exports= {
     minimize: true,
     minimizer: [
       new TerserPlugin({
+        extractComments:false,
         terserOptions: {
           parse: {
             ecma: 8,
@@ -63,10 +70,10 @@ module.exports= {
 
   stats: {
     all: false,
-    // modules: true,
+    modules: true,
     // maxModules: 0,
-    // errors: true,
+    errors: true,
     // warnings: true,
-    // timings: true,
+    timings: true,
   }
 };

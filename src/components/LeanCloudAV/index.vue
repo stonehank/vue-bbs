@@ -15,7 +15,7 @@
     import AV from './CustomAV'
     import {getFromCache,randUniqueString,setCache} from "../../utils";
     import initAVObject from "./initAVObject";
-    let ownerCodeKey='serverless-bbs-ownerCode'
+    let ownerCodeKey='serverless_bbs_ownerCode'
     let oldRandOwnerCode=getFromCache(ownerCodeKey)
     let newRandOwnerCode=oldRandOwnerCode || randUniqueString()
     export default {
@@ -50,7 +50,7 @@
              * @param title
              * @returns {Promise}<Number>
              */
-            leancloud_getPageview(uniqStr,title){
+            leancloud_getPageView(uniqStr,title){
                 let {CounterClass} = this.$serverLessBBS
                 return new Promise(resolve=>{
                     if(this.pageviewMap.has(uniqStr)){
@@ -61,7 +61,8 @@
                         .find()
                         .then(items=>{
                             if(items.length===0){
-                                return this.leancloud_createPageviewCounter(uniqStr,title)
+                                // 不存在当前页面，创建
+                                return this.leancloud_generatePageView(uniqStr,title)
                                 .then(()=>{
                                     this.pageviewMap.set(uniqStr,1)
                                     return resolve(1)
@@ -70,6 +71,7 @@
                                 if(items.length>1){
                                     console.warn("Warning! The uniqStr is not unique! Current uniqStr is: "+uniqStr)
                                 }
+                                // 存在页面， 更新
                                 let item=items[0]
                                 let updateTime=item.get("time")+1
                                 item.increment("time")
@@ -83,7 +85,8 @@
                             }
                         }).catch(ex=>{
                             if(ex.code===101){
-                                return this.leancloud_createPageviewCounter(uniqStr,title)
+                                // 不存在表格 创建
+                                return this.leancloud_generatePageView(uniqStr,title)
                                 .then(()=>{
                                     this.pageviewMap.set(uniqStr,1)
                                     return resolve(1)
@@ -103,7 +106,7 @@
              * @param title
              * @returns {Promise}<Void>
              */
-            leancloud_createPageviewCounter(uniqStr,title=''){
+            leancloud_generatePageView(uniqStr,title=''){
                 let {CounterClass} = this.$serverLessBBS
                 let Ct = AV.Object.extend(CounterClass);
                 let newCounter = new Ct();
@@ -166,19 +169,13 @@
                             return resolve(0)
                         }else{
                             console.error('Error happen in fetch count',ex)
+                            this.countMap.set(uniqStr,0)
+                            return resolve(0)
                         }
                     })
                 })
             },
 
-            /**
-             *
-             * @param uniqStr
-             * @param count
-             */
-            leancloud_updateCommentCount(uniqStr,count){
-                this.countMap.set(uniqStr,count)
-            },
 
             /**
              *
@@ -240,25 +237,25 @@
              * @param commentRaw
              * @returns {Promise}<CommentObject>
              */
-            leancloud_saveEditMessage({id,comment}){
-                const {editMode,CommentClass}=this.$serverLessBBS
-                if(!editMode)return Promise.reject(null)
-                return this.getUser()
-                .then(()=>{
-                    return  new AV.Query(CommentClass).get(id)
-                    .then((item)=>{
-                        item.set('ownerCode',newRandOwnerCode)
-                        item.set('message',message)
-                        // 这里当用户被删除后，无法修改ownerCode
-                        return item.save()
-                    })
-                    .catch((err)=>{
-                        return new Error('Can not found comment, '+err)
-                    })
-                }).catch(err=>{
-                    throw new Error('Can not modify! '+err)
-                })
-            },
+            // leancloud_saveEditMessage({id,comment}){
+            //     const {editMode,CommentClass}=this.$serverLessBBS
+            //     if(!editMode)return Promise.reject(null)
+            //     return this.getUser()
+            //     .then(()=>{
+            //         return  new AV.Query(CommentClass).get(id)
+            //         .then((item)=>{
+            //             item.set('ownerCode',newRandOwnerCode)
+            //             item.set('message',message)
+            //             // 这里当用户被删除后，无法修改ownerCode
+            //             return item.save()
+            //         })
+            //         .catch((err)=>{
+            //             return new Error('Can not found comment, '+err)
+            //         })
+            //     }).catch(err=>{
+            //         throw new Error('Can not modify! '+err)
+            //     })
+            // },
 
             /**
              * uploadField
@@ -288,17 +285,17 @@
                     }
                 }
                 comment.set('url',location.pathname + location.hash)
-                // comment.save()
+                comment.set(ownerCodeKey,newRandOwnerCode)
+                setCache(ownerCodeKey,newRandOwnerCode)
                 let acl = new AV.ACL();
                 acl.setPublicReadAccess(true);
                 acl.setPublicWriteAccess(false);
+                // console.log(comment)
                 return this.getUser()
                 .then((user)=>{
                     console.log('got user,starting upload in leancloud...')
                     acl.setWriteAccess(user.id,true);
                     comment.setACL(acl);
-                    comment.set(ownerCodeKey,newRandOwnerCode)
-                    setCache(ownerCodeKey,newRandOwnerCode)
                     return comment.save()
                 })
                 .catch((err)=>{
@@ -307,13 +304,23 @@
                     comment.setACL(acl);
                     return comment.save()
                 })
-                .then(data=>data.attributes)
-                .then(data=>{
+                .then((response)=>{
+                    console.log('upload,success',response)
+                    let data=response.attributes
+                    if(data.error){
+                        console.error(data.error)
+                        return null
+                    }
                     if(!data.replyId){
                         let count=this.countMap.get(data.uniqStr)
-                        this.leancloud_updateCommentCount(data.uniqStr,  count+1)
+                        this.countMap.set(data.uniqStr,count+1)
                     }
                     return data
+                })
+                .catch((ex)=>{
+                    console.log('upload,error',ex,ex.code)
+                    console.error(ex.msg)
+                    return null
                 })
             },
 
@@ -322,7 +329,7 @@
              * @param uniqStr
              * @returns {Promise}<Array>[]
              */
-            leancloud_fetchListFrom(uniqStr){
+            leancloud_fetchCommentList(uniqStr){
                 const {CommentClass}=this.$serverLessBBS
                 let pageSize=1000
                 return new AV.Query(CommentClass)
@@ -350,36 +357,36 @@
              * @param uniqStr
              * @returns {Promise}<Array>
              */
-            fetchOwnerTask(uniqStr){
-                const {editMode}=this.props
-                if(!editMode)return Promise.resolve([])
-                return new AV.Query(this.props.CommentClass)
-                .equalTo('uniqStr',uniqStr)
-                .equalTo('ownerCode',oldRandOwnerCode)
-                .find()
-                .then(ownerItems=>{
-                    if(ownerItems.length===0){
-                        return ownerItems
-                    }
-                    return new AV.Query(this.state.UserClass)
-                    .equalTo('username',oldRandOwnerCode)
-                    .find()
-                    .then((validUser)=>{
-                        if(validUser.length===0){
-                            return []
-                        }else{
-                            return ownerItems
-                        }
-                    })
-                })
-                .catch(ex=>{
-                    if(ex.code===101){
-                        return []
-                    }else{
-                        console.error('Error happen in fetch owner task',ex)
-                    }
-                })
-            },
+            // fetchOwnerTask(uniqStr){
+            //     const {editMode}=this.props
+            //     if(!editMode)return Promise.resolve([])
+            //     return new AV.Query(this.props.CommentClass)
+            //     .equalTo('uniqStr',uniqStr)
+            //     .equalTo('ownerCode',oldRandOwnerCode)
+            //     .find()
+            //     .then(ownerItems=>{
+            //         if(ownerItems.length===0){
+            //             return ownerItems
+            //         }
+            //         return new AV.Query(this.state.UserClass)
+            //         .equalTo('username',oldRandOwnerCode)
+            //         .find()
+            //         .then((validUser)=>{
+            //             if(validUser.length===0){
+            //                 return []
+            //             }else{
+            //                 return ownerItems
+            //             }
+            //         })
+            //     })
+            //     .catch(ex=>{
+            //         if(ex.code===101){
+            //             return []
+            //         }else{
+            //             console.error('Error happen in fetch owner task',ex)
+            //         }
+            //     })
+            // },
 
 
         }

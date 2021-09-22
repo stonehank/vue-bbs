@@ -5,7 +5,7 @@
         <div class="bbs-msg-body"
              :class="{'msg-small':small}"
         >
-            <div v-html="renderMessage"></div>
+            <div class="markdown-body" v-html="renderMessage"></div>
         </div>
         <div class="bbs-msg-action"
              :class="{'msg-small':small}"

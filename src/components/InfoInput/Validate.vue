@@ -21,7 +21,7 @@
                 return this.$refs[this.uuid].validate()
             },
             getElement(){
-                return this.$refs[this.uuid].$el
+                return this.$refs[this.uuid].getElement()
             },
             reset(){
                 return this.$refs[this.uuid].reset()

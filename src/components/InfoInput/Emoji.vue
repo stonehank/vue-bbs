@@ -40,7 +40,7 @@
         height: 200px;
         display:flex;
         flex-flow:wrap;
-        /*box-shadow:0 0 1px var(--bbs-separator-color);*/
+        border-radius: 6px;
         user-select: none;
         .emoji-panel-item{
             font-style: normal;
