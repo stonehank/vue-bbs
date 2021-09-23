@@ -5,7 +5,7 @@ const ErrorOverlayPlugin = require('error-overlay-webpack-plugin')
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
-module.exports = function pluginConfig(isDevelopment) {
+module.exports = function pluginConfig(isDevelopment,isDemo) {
     return [
         new VueLoaderPlugin(),
         isDevelopment && new FriendlyErrorsWebpackPlugin(),
@@ -13,7 +13,7 @@ module.exports = function pluginConfig(isDevelopment) {
         new WebpackBar(),
         !isDevelopment && new CleanWebpackPlugin(),
         new BundleAnalyzerPlugin({analyzerMode: isDevelopment ? 'disabled' : 'static'}),
-        isDevelopment && new HtmlWebPackPlugin({
+        (isDevelopment || isDemo) && new HtmlWebPackPlugin({
             template: "./index.html",
             filename: "./index.html"
         })

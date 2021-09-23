@@ -8,11 +8,11 @@ const safePostCssParser = require('postcss-safe-parser');
 const moduleConfig  = require('./module.config')
 const pluginConfig  = require('./plugins.config')
 
-const src = path.join(__dirname, 'src')
+const dev = path.join(__dirname, 'demo-src')
 
 module.exports= {
   mode: 'production',
-  entry: path.join( src, 'demo.js'),
+  entry: path.join( dev, 'index.js'),
   output: {
     path: path.join(__dirname, 'demo'),
     filename:'index.js'
@@ -54,8 +54,5 @@ module.exports= {
     extensions: [ '.vue', '.js', '.json', '.css','.scss'],
   },
   module: moduleConfig(false),
-  plugins: pluginConfig(false),
-  node:{
-    child_process: 'empty'
-  }
+  plugins: pluginConfig(false,true),
 };

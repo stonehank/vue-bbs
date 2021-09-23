@@ -5,11 +5,10 @@ const marked = require('marked');
 
 const  hljs =require('highlight.js/lib/highlight');
 const javascript = require('highlight.js/lib/languages/javascript');
-const java = require('highlight.js/lib/languages/java');
+const xml = require('highlight.js/lib/languages/xml');
 
 hljs.registerLanguage('javascript', javascript);
-hljs.registerLanguage('java', java);
-
+hljs.registerLanguage('xml', xml);
 
 function createMarked(hljs){
   marked.setOptions({
@@ -43,9 +42,28 @@ function modify_hljs(createHljs){
   }
   markdown=createMarked(_hljs)
 }
-
+window.xss=xss
 function xssMarkdown(content){
-  return markdown(xss(content))
+  if(!content)return ''
+  // console.log(content)
+  // return markdown(xss(content))
+  console.log(markdown(content))
+  return xss(markdown(content),{
+    whiteList:{
+      ...xss.whiteList,
+      span: ['class'],
+      code: ['class'],
+      pre: ['class'],
+    },
+    onTag:function(tag,html){
+      if(tag==='input'){
+        if(html.includes('type="checkbox"') && html.includes('disabled')){
+          return html
+        }
+      }
+    },
+  })
+  // return XssFilter(markdown(content))
 }
 
 

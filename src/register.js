@@ -12,7 +12,7 @@ export default function (Vue, options) {
         pageviewMap:new Map(),
     }
     if(Vue.prototype.$serverLessBBS!=null){
-        throw new Error('Should not register serverless-bbs twice.')
+        throw new Error('Should not register vue-bbs twice.')
     }
     Vue.prototype.$serverLessBBS=Object.assign(defaultOptions,options)
 }

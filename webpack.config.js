@@ -21,7 +21,7 @@ module.exports= {
   output: {
     path: path.join(__dirname, 'dist'),
     filename:'[name].js',
-    library: "serverless-bbs",
+    library: "vue-bbs",
     libraryTarget: 'umd',
   },
   optimization: {

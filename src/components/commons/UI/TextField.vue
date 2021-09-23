@@ -174,6 +174,7 @@
                 this.error=false
                 this.errorMsg=null
                 this.dirty=false
+                this.calcHeight()
             },
             getElement(){
                 return this.$refs['input-ref']

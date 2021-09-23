@@ -77,11 +77,11 @@ function clearAttr(el) {
     let name = attr.name
     switch (attr.name.toLowerCase()) {
       case 'style':
-        attr.value.split(';').forEach((item) => {
-          if (item.split(':')[0]==='color') {
-            addToStyles.push(item)
-          }
-        })
+        // attr.value.split(';').forEach((item) => {
+        //   if (item.split(':')[0]==='color') {
+        //     addToStyles.push(item)
+        //   }
+        // })
         break;
       case 'class':
         if(el.className==='at'){

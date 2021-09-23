@@ -88,17 +88,18 @@
                 avatar:'',
                 nickname:'',
                 email:'',
-                link:'',
+                // link:'',
                 message:'',
                 at:'',
                 rootId:'',
                 replyId:'',
-                cacheKey:'serverless-bbs-vue-info',
+                cacheKey:'vue-bbs-info',
             }
         },
         watch:{
             // 储存cookie
-            ...['avatar','nickname','email','link'].reduce((obj,prop2)=>{
+            // ...['avatar','nickname','email','link'].reduce((obj,prop2)=>{
+            ...['avatar','nickname','email'].reduce((obj,prop2)=>{
                 if(typeof obj==='string'){
                     let str=obj
                     obj={
@@ -125,7 +126,7 @@
             let cacheData=this.getCacheData()
             this.nickname=cacheData.nickname
             this.email=cacheData.email
-            this.link=cacheData.link
+            // this.link=cacheData.link
             this.avatar=cacheData.avatar
         },
         methods:{
@@ -148,17 +149,18 @@
                     cacheData={
                         nickname:'',
                         email:'',
-                        link:'',
+                        // link:'',
                         avatar:''
                     }
                 }
                 return cacheData
             },
             validate(){
-                let {nickname, email, link, message}= this.$refs
+                // let {nickname, email, link, message}= this.$refs
+                let {nickname, email, message}= this.$refs
                 return nickname.validate()
                     && email.validate()
-                    && link.validate()
+                    // && link.validate()
                     && message.validate()
             },
             submit(){
@@ -167,7 +169,7 @@
                     avatar:this.avatar,
                     nickname:this.nickname,
                     email:this.email,
-                    link:this.link,
+                    // link:this.link,
                     message:this.message,
                     rootId:this.rootId,
                     replyId:this.replyId,
