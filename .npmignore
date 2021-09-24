@@ -17,6 +17,8 @@ codecov.yml
 src
 test
 demo
+dev
+demo-src
 draft
 docs
 index.html
