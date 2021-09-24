@@ -5,7 +5,7 @@
         <div class="bbs-msg-body"
              :class="{'msg-small':small}"
         >
-            <div class="markdown-body" v-html="renderMessage"></div>
+            <MessageRender :details="details" />
         </div>
         <div class="bbs-msg-action"
              :class="{'msg-small':small}"
@@ -61,9 +61,11 @@
     import cloneDeep from "clone-deep";
     import Loading from "../../commons/Loading";
     import {highLightEle, scrollToEle} from "../../../utils/DOM";
+    import MessageRender from "./MessageRender";
     export default {
         name: "MessageBody",
         components: {
+            MessageRender,
             Loading,
             MoreButton,
             ListRender:()=>import("../ListRender"),
@@ -82,9 +84,6 @@
         computed:{
             canRenderReplyBtn(){
                 return this.curNest<this.maxNest
-            },
-            renderMessage(){
-                return xssMarkdown(replaceAtToTag(this.details.message,this.details.replyId,this.details.at))
             }
         },
         watch:{
@@ -92,22 +91,16 @@
                 if(!newData)return
                 let {replyId,rootId}=newData
                 // 不同祖先，彻底没关系
-                console.log(0,newData)
                 if(rootId!==(this.details.rootId || this.details.objectId))return
                 // 已经过了最大嵌套层，不必更新
-                console.log(1)
                 if(this.maxNest===this.curNest)return
                 // 下一层是最大嵌套数
-                console.log(2)
                 if(this.maxNest===this.curNest + 1){
-                    console.log(3)
                     this.updateDataAfterReply()
                 }else if(replyId===this.details.objectId){
-                    console.log(4)
                     // 不是最大嵌套层，查看replyId和objectId相等时更新
                     this.updateDataAfterReply()
                 }
-                console.log(5)
             },
         },
         data(){

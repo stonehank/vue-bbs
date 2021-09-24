@@ -33,8 +33,8 @@ $warning-color:#FFC107;
   box-sizing: border-box;
 }
 .serverless-bbs{
-
-
+  background-color:var(--bbs-background-color);
+  color:var(--bbs-text-primary);
   a{
     position: relative;
     text-decoration: none;
