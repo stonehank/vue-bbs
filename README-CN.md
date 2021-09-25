@@ -2,17 +2,17 @@
 
 [English](./README.md) / 中文
 
-#### 目前支持的服务器
+## 目前支持的服务器
 
 * Leancloud
 
 
-#### 安装
+## 安装
 
 `npm install vue-bbs`
 
 
-#### 使用
+## 使用
 
 `<vue-bbs />` 评论系统最主要部分，包括评论，回复查看等
 
@@ -21,7 +21,7 @@
 `<vue-bbs-pageview />` 当前页面的页面浏览量
 
 
-* 全局引入
+#### 全局引入
 
 ```js
 // index.js
@@ -39,7 +39,7 @@ Vue.use(bbs,{
 接着，便可以在任意处使用 `<vue-bbs>`,`<vue-bbs-counter>`,`<vue-bbs-pageview>`
 
 
-* 局部引入
+#### 局部引入
 
 首先注册
 ```js
@@ -84,9 +84,9 @@ register(Vue,{
 ```
 
 
-#### 选项
+## 选项
 
-##### 注册
+#### 注册
 
 |参数|是否必须|说明|默认值|
 |:---:|:---:|:---:|:---:|
@@ -96,7 +96,7 @@ register(Vue,{
 |CommentClass|是|在`leancloud`上存放**评论**的Class名称|Comment|
 |CounterClass|是|在`leancloud`上存放**页面阅读量**的Class名称|Counter|
 
-##### Component vue-bbs
+#### Component vue-bbs
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|
@@ -104,14 +104,14 @@ register(Vue,{
 |pageSize|否|评论列表分页，每页条数|10|
 |[uniqStr](#uniqStr)|否|一个独立值，用于获取当前页面评论|location.origin + location.pathname|
 
-##### Component vue-bbs-counter
+#### Component vue-bbs-counter
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|
 |size|否|Loading图标大小|16|
 |[uniqStr](#uniqStr)|否|一个独立值，用于获取当前页面评论|location.origin + location.pathname|
 
-##### Component vue-bbs-pageview
+#### Component vue-bbs-pageview
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|

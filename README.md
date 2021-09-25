@@ -2,17 +2,17 @@
 
 English / [中文](./README-CN.md)
 
-#### Support Server
+## Support Server
 
 * Leancloud
 
 
-#### Install
+## Install
 
 `npm install vue-bbs`
 
 
-#### Usage
+## Usage
 
 `<vue-bbs />` The BBS main panel
 
@@ -21,7 +21,7 @@ English / [中文](./README-CN.md)
 `<vue-bbs-pageview />` Current page total page viewer
 
 
-* Global
+#### Global
 
 ```js
 // index.js
@@ -39,7 +39,7 @@ Vue.use(bbs,{
 Then you can use `<vue-bbs>`,`<vue-bbs-counter>`,`<vue-bbs-pageview>` anywhere
 
 
-* Local
+#### Local
 
 Register
 ```js
@@ -84,9 +84,9 @@ Use in `some-component.vue`
 ```
 
 
-#### Props
+## Props
 
-##### Register
+#### Register
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|
@@ -96,7 +96,7 @@ Use in `some-component.vue`
 |CommentClass|required|Comment class name in leancloud|Comment|
 |CounterClass|required|Pageview class name in leancloud|Counter|
 
-##### Component vue-bbs
+#### Component vue-bbs
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|
@@ -105,14 +105,14 @@ Use in `some-component.vue`
 |[uniqStr](#uniqstr)|optional|A unique string, use for fetch the specific page comment list|location.origin + location.pathname|
 
 
-##### Component vue-bbs-counter
+#### Component vue-bbs-counter
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|
 |size|optional|Loading icon size|16|
 |[uniqStr](#uniqstr)|optional|A unique string, use for fetch the specific page comment records count|location.origin + location.pathname|
 
-##### Component vue-bbs-pageview
+#### Component vue-bbs-pageview
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|
