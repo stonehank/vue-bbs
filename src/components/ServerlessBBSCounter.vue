@@ -15,10 +15,10 @@
         props:{
             uniqStr:{
                 type:String,
-                default:window.location.pathname + window.location.hash
+                default:window.location.origin+window.location.pathname
             },
             size:{
-                default:18
+                default:16
             }
         },
         data(){

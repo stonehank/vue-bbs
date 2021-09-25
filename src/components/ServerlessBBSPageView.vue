@@ -14,7 +14,7 @@
         props:{
             uniqStr:{
                 type:String,
-                default:window.location.pathname + window.location.hash
+                default:window.location.origin+window.location.pathname
             },
             size:{
                 default:16
