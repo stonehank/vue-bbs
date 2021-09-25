@@ -1,26 +1,32 @@
 <template>
-    <button class="bbs-btn"
+    <button
+            class="bbs-btn"
             :class="{
                 [color+'-color']:!!color,
                 'bbs-btn-text':text!==false,
                 'no-gap':dense!==false,
-                'bbs-disabled':disabled
+                'bbs-disabled':disabled,
+                'bbs-btn-loading':loading
             }"
             v-bind="$attrs"
             v-on="$listeners"
     >
-        <slot></slot>
+        <Loading :size="22" v-if="loading" />
+        <slot v-else></slot>
     </button>
 </template>
 
 <script>
+    import Loading from "../Loading";
     export default {
         name: "Button",
+        components: {Loading},
         props:{
             color:String,
             text:Boolean,
             dense:Boolean,
-            disabled:Boolean
+            disabled:Boolean,
+            loading:Boolean,
         },
 
     }
@@ -52,11 +58,15 @@
         -ms-user-select: none;
         user-select: none;
         outline: none;
+        min-width:64px;
+        height:36px;
         /*&:hover{*/
         /*    opacity:0.85;*/
         /*}*/
     }
     .bbs-btn.no-gap{
+        min-width:initial;
+        height:auto;
         padding:0;
     }
     .success-color{
@@ -93,6 +103,11 @@
         &.warning-color{
             color: var(--bbs-warning-color);
         }
+    }
+    .bbs-btn-loading{
+        user-select: none;
+        pointer-events: none;
+
     }
 
 </style>

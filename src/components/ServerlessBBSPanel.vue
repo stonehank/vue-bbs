@@ -18,7 +18,7 @@
                            :at="at"
         />
         <div class="text-right mt-2">
-            <Button color="success" @click="submit">提交</Button>
+            <Button color="success" @click="submit" :loading="submitLoading">提交</Button>
         </div>
         <CommentList
                 ref="bbs-comment-list"

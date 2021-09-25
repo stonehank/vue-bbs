@@ -1,6 +1,7 @@
 <template>
     <Button
             :ref="btnUuid"
+            dense
             class="position-relative"
             @click.stop="toggleStatus"
             v-bind="$attrs"

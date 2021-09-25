@@ -25,6 +25,7 @@
     .lds-ring {
         display: inline-block;
         position: relative;
+        background: inherit;
         /*width: 80px;*/
         /*height: 80px;*/
     }

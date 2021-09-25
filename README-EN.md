@@ -46,7 +46,7 @@ Register
 ```js
 // index.js
 import Vue from 'vue'
-import register from 'vue-bbs/register'
+import register from 'vue-bbs/dist/register'
 
 register(Vue,{
     appId:"#########-####",
@@ -69,9 +69,9 @@ Use in `some-component.vue`
 </template>
 
 <script>
-    import VueBbs from "vue-bbs/vue-bbs";
-    import VueBbsCounter from "vue-bbs/vue-bbs-counter";
-    import VueBbsPageview from "vue-bbs/vue-bbs-pageview";
+    import VueBbs from "vue-bbs/dist/vue-bbs";
+    import VueBbsCounter from "vue-bbs/dist/vue-bbs-counter";
+    import VueBbsPageview from "vue-bbs/dist/vue-bbs-pageview";
 
     export default {
         name: "App",
