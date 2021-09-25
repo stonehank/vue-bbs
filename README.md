@@ -102,6 +102,7 @@ register(Vue,{
 |:---:|:---:|:---:|:---:|
 |nest|否|定义回复嵌套的层数|1|
 |pageSize|否|评论列表分页，每页条数|10|
+|offset|否|当点击回复时，自动滚动的offset，适用于`fixed`菜单的项目|0|
 |[uniqStr](#uniqStr)|否|一个独立值，用于获取当前页面评论|location.origin + location.pathname|
 
 #### Component vue-bbs-counter

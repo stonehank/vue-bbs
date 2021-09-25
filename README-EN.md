@@ -103,6 +103,7 @@ Use in `some-component.vue`
 |:---:|:---:|:---:|:---:|
 |nest|optional|Defined the nest layers of the reply list|1|
 |pageSize|optional|Defined the comment records in one time render|10|
+|offset|optional|App menu with `fixed`, can pass the scroll offset|0|
 |[uniqStr](#uniqstr)|optional|A unique string, use for fetch the specific page comment list|location.origin + location.pathname|
 
 
