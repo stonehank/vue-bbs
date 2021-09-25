@@ -9,7 +9,7 @@
                 <NickName ref="nickname" style="flex:1;" v-model="nickname" />
             </div>
             <Email ref="email" class="bbs-input" v-model="email" />
-<!--            <Link ref="link" class="bbs-input" v-model="link" />-->
+            <!--            <Link ref="link" class="bbs-input" v-model="link" />-->
         </div>
         <MessageInput ref="message" v-model="message"/>
         <ActionsController :message="message"
@@ -79,7 +79,9 @@
                 type:[String,Number],
                 default:1
             },
-
+            offset: {
+                default:0
+            }
         },
         data(){
             return {
@@ -213,7 +215,8 @@
                 // window.location.hash = "reply"
                 scrollToEle(this.$refs['bbs-input-box'],{
                     highlight:false,
-                    smooth:true
+                    smooth:true,
+                    offset:this.offset
                 }).then(()=>{
                     this.$refs.message.getElement().selectionStart=this.message.length
                     this.$refs.message.getElement().selectionEnd=this.message.length

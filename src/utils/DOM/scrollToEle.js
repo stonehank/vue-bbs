@@ -2,7 +2,8 @@ import {highLightEle} from "./index";
 
 export default function scrollToEle(ele, {
     highlight=false,
-    smooth=false
+    smooth=false,
+    offset=0
 }={}) {
     if (!ele) return Promise.resolve(false)
     if (!(ele instanceof Element)) {
@@ -11,14 +12,17 @@ export default function scrollToEle(ele, {
     if (!(ele instanceof Element)) {
         throw new Error('Pass ele is not correct')
     }
-    let parentNode = getScrollParent(ele)
+    let targetEle=ele
+    let parentNode = getScrollParent(targetEle)
+    // console.log('scroll step1',ele,parentNode)
     return new Promise((res)=>{
         while (parentNode) {
-            scrollTo(ele, parentNode, {
+            scrollTo(targetEle, parentNode, {
                 highlight,
-                smooth
+                smooth,
+                offset: targetEle===ele ? offset : 0
             })
-            ele = parentNode
+            targetEle = parentNode
             parentNode = getScrollParent(parentNode)
         }
         setTimeout(()=>{
@@ -29,16 +33,16 @@ export default function scrollToEle(ele, {
 }
 
 
-function scrollTo(target, parent, {highlight,smooth}) {
-    let top = calculateTopPosition(target, parent)
+function scrollTo(target, parent, {highlight,smooth,offset}) {
+    let top = Math.max(calculateTopPosition(target, parent),0)
     if (parent instanceof Document) {
         parent = window
     }
     if (highlight) highLightEle(target)
-    console.log('top',top,target,parent)
+    console.log('top',top,target,parent,offset)
     try{
         parent.scrollTo({
-            top: top,
+            top: top - offset,
             behavior:smooth ? 'smooth' : 'instant'
         })
     }catch(_){
@@ -52,7 +56,11 @@ function getScrollParent(node) {
     if (parentNode == null) {
         return null;
     }
-    if (parentNode.scrollHeight > parentNode.clientHeight) {
+    if (!(parentNode instanceof Element)) {
+        return null
+    }
+    let overflowY=getComputedStyle(parentNode)['overflow-y']
+    if (parentNode.scrollHeight > parentNode.clientHeight && ['auto','scroll'].includes(overflowY)) {
         return parentNode;
     } else {
         return getScrollParent(parentNode);
