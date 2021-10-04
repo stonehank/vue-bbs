@@ -1,12 +1,13 @@
 <template>
     <div>
         <TextField
-                :rows="5"
+                :rows="$attrs.rows || 5"
                 :ref="uuid"
-                label="说点什么吧"
-                placeholder=""
-                :rules="[v=>!!v || '内容不能为空']"
+                :label="$attrs.label || '说点什么吧'"
+                :placeholder="$attrs.placeholder || ''"
+                :rules="$attrs.rules || [v=>!!v || '内容不能为空']"
                 v-model="newVal"
+                v-bind="$attrs"
         />
     </div>
 </template>
@@ -38,6 +39,9 @@
                 newVal:this.value,
             }
         },
+        mounted(){
+            console.log(this,'msg input')
+        }
     }
 </script>
 

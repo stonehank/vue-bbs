@@ -4,13 +4,13 @@
 </template>
 
 <script>
-    import DataFetch from "./DataFetchAndResolve/DataFetch";
     import Loading from "./commons/Loading";
     import '../assets/css/common.scss'
+    import Layer from "../layer";
     export default {
         name: "ServerlessBBSPageView",
         components: {Loading},
-        extends:DataFetch,
+        extends:Layer,
         props:{
             uniqStr:{
                 type:String,
@@ -43,7 +43,7 @@
                 .finally(()=>this.loading=false)
             },
             loadCounter(){
-                return this.fetchViewFromServer(this.uniqStr,'Vue测试主页')
+                return this.fetchPageViews(this.uniqStr,'Vue测试主页')
             },
         }
     }

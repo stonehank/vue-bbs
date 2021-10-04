@@ -41,7 +41,7 @@
         },
         watch:{
             show(newV){
-                console.log(newV,this.newShow)
+                // console.log(newV,this.newShow)
                 if(newV!==this.newShow){
                     this.toggleStatus()
                 }

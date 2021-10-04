@@ -119,6 +119,8 @@
                 this.calcHeight()
                 inputEle.addEventListener('input', this.calcHeight)
             }
+            this.handleFocus()
+            this.dirty=false
             this.handleBlur()
         },
         methods: {

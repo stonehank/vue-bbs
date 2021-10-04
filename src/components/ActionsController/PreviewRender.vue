@@ -7,7 +7,8 @@
 </template>
 
 <script>
-    import {replaceAtToTag, xssMarkdown} from "../../utils/String";
+    import { xssMarkdown} from "../../utils/String";
+    import {renderAtMessage} from "../../utils/handlerAtTag";
     export default {
         name: "PreviewRender",
         props:{
@@ -19,7 +20,7 @@
         computed:{
             previewMessage(){
                 if(!this.preview)return
-                return xssMarkdown(replaceAtToTag(this.message,this.replyId,this.at))
+                return xssMarkdown(renderAtMessage(this.message,this.replyId,this.at))
             }
         }
     }

@@ -5,23 +5,58 @@
         <div class="bbs-msg-body"
              :class="{'msg-small':small}"
         >
-            <MessageRender :details="details" />
+            <MessageRender v-if="!edit" :details="details" />
+            <div v-else>
+                <MessageInput ref="edit_message" v-model="editMessage" label="编辑内容" :rows="3"/>
+                <ActionsController :message="editMessage"
+                                   :insertEmoji="insertEmoji"
+                                   :replyId="details.replyId"
+                                   :at="details.at"
+                />
+            </div>
         </div>
         <div class="bbs-msg-action"
              :class="{'msg-small':small}"
         >
-            <Button dense
-                    text
-                    class="mr-4"
-                    color="info"
-                    @click="()=>startReply({
+            <div v-if="edit && isOwnerComment" class="bbs-msg-action-edit">
+                <Button dense
+                        text
+                        class="mr-4"
+                        @click="closeEdit"
+                >
+                    取消
+                </Button>
+                <Button dense
+                        text
+                        color="success"
+                        class="mr-4"
+                        @click="saveEdit"
+                >
+                    保存
+                </Button>
+            </div>
+            <div v-else class="bbs-msg-action-no-edit">
+                <Button dense
+                        v-if="isOwnerComment"
+                        text
+                        class="mr-4"
+                        @click="showEdit"
+                >
+                    编辑
+                </Button>
+                <Button dense
+                        text
+                        class="mr-4"
+                        color="info"
+                        @click="()=>startReply({
                         rootId:details.rootId || details.objectId,
                         replyId:details.objectId,
                         replyName:details.nickname,
                     })"
-            >
-                回复
-            </Button>
+                >
+                    回复
+                </Button>
+            </div>
             <span v-if="canRenderReplyBtn" class="bbs-reply-btn">
                 <Button dense v-if="replyCounts>0" @click="toggleReplyList" text>
                     <span v-if="showReply">收起评论</span>
@@ -37,7 +72,7 @@
                             :cur-nest="curNest+1"
                             :maxNest="maxNest"
                             :list="replyList"
-                            :startReply="startReply"
+                            :updateCommentAsync="updateCommentInReplyAsync"
                             :needUpdateData="needUpdateData"
                             :loadList="loadList"
                 />
@@ -57,14 +92,19 @@
     import {SlideYUpTransition} from "vue2-transitions";
     import Button from "../../commons/UI/Button";
     import MoreButton from "../MoreButton";
-    import {replaceAtToTag, xssMarkdown} from "../../../utils/String";
     import cloneDeep from "clone-deep";
     import Loading from "../../commons/Loading";
-    import {highLightEle, scrollToEle} from "../../../utils/DOM";
+    import {calcValueAndPos, highLightEle, scrollToEle} from "../../../utils/DOM";
     import MessageRender from "./MessageRender";
+    import TextField from "../../commons/UI/TextField";
+    import MessageInput from "../../MessageInput/index";
+    import ActionsController from "../../ActionsController/index";
     export default {
         name: "MessageBody",
         components: {
+            ActionsController,
+            MessageInput,
+            TextField,
             MessageRender,
             Loading,
             MoreButton,
@@ -72,18 +112,23 @@
             Button,
             SlideYUpTransition
         },
+        inject:['updateComment','startReply'],
         props:{
             small:Boolean,
             needUpdateData:Object,
             details:Object,
-            startReply:Function,
             loadList:Function,
+            updateCommentAsync:Function,
             curNest:Number,
             maxNest:Number,
         },
         computed:{
             canRenderReplyBtn(){
                 return this.curNest<this.maxNest
+            },
+            isOwnerComment(){
+                if(!this.$serverLessBBS.loggedUser)return false
+                return this.$serverLessBBS.loggedUser.id!=null && this.$serverLessBBS.loggedUser.id===this.details.user_id
             }
         },
         watch:{
@@ -94,11 +139,13 @@
                 if(rootId!==(this.details.rootId || this.details.objectId))return
                 // 已经过了最大嵌套层，不必更新
                 if(this.maxNest===this.curNest)return
-                // 下一层是最大嵌套数
-                if(this.maxNest===this.curNest + 1){
+                // 查看replyId和objectId相等时更新
+                if(replyId===this.details.objectId){
+                    // console.log(1)
                     this.updateDataAfterReply()
-                }else if(replyId===this.details.objectId){
-                    // 不是最大嵌套层，查看replyId和objectId相等时更新
+                }else if(this.maxNest===this.curNest + 1  && this.replyList.find(obj=>obj.objectId===replyId)){
+                    // 下一层是最大嵌套数
+                    // console.log(2)
                     this.updateDataAfterReply()
                 }
             },
@@ -111,6 +158,8 @@
                 replyList:[],
                 replyPage:1,
                 nodata:false,
+                edit:false,
+                editMessage:this.details.message,
             }
         },
         methods:{
@@ -135,7 +184,6 @@
                 }
                 return this.loadList(params)
                 .then(({data})=>{
-                    console.log(data)
                     if(data.length===0){
                         this.nodata=true
                     }else{
@@ -143,13 +191,30 @@
                     }
                 })
             },
+            saveEdit(){
+                if(!this.validate())return
+                let id=this.details.objectId
+                this.updateComment(id,this.editMessage)
+                .then(data=>{
+                    this.closeEdit()
+                    this.updateCommentAsync(id,data)
+                })
+            },
+            updateCommentInReplyAsync(id,data){
+                let replyData=this.replyList.find(obj=>obj.objectId===id)
+                if(replyData){
+                    replyData.message=data.message
+                    replyData.updatedAt=data.updatedAt
+                }else{
+                    this.updateCommentAsync(id,data)
+                }
+            },
             fetchMore(){
                 this.replyPage+=1
                 return this.loadData()
 
             },
             updateDataAfterReply(){
-                console.log('update',this.showReply)
                 let next
                 if(!this.showReply){
                     next=this.toggleReplyList()
@@ -165,12 +230,34 @@
                 })
                 .then(()=>{
                     let replyId=this.replyList[0].objectId
-                    console.log(this.replyList)
                     let ele=document.getElementById(replyId).getElementsByClassName('bbs-msg-body')[0]
                     if(!ele)return
                     highLightEle(ele)
                 })
-            }
+            },
+            insertEmoji(emoji) {
+                let messageRef = this.$refs.edit_message
+                let ele = messageRef.getElement()
+                let [newV, scrollTop, startPos] = calcValueAndPos(ele, emoji)
+                this.editMessage = newV
+                this.$nextTick(function () {
+                    ele.selectionStart = startPos + emoji.length;
+                    ele.selectionEnd = startPos + emoji.length;
+                    ele.scrollTop = scrollTop;
+                    ele.focus();
+                })
+            },
+            showEdit(){
+                this.edit=true
+                this.editMessage=this.details.message
+            },
+            closeEdit(){
+                this.edit=false
+                this.editMessage=this.details.message
+            },
+            validate() {
+                return this.$refs.edit_message.validate()
+            },
         }
     }
 </script>
@@ -207,6 +294,10 @@
         &.msg-small{
             margin-top:4px;
         }
+    }
+    .bbs-msg-action-edit, .bbs-msg-action-no-edit{
+        display: flex;
+        align-items: center;
     }
     .at{
         text-decoration: none;

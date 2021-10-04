@@ -10,6 +10,7 @@ export default function (Vue, options) {
         initialLoading:true,
         countMap:new Map(),
         pageviewMap:new Map(),
+        loggedUser:null,
     }
     if(Vue.prototype.$serverLessBBS!=null){
         throw new Error('Should not register vue-bbs twice.')

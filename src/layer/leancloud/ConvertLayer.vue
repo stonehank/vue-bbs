@@ -3,11 +3,54 @@
 </template>
 
 <script>
+    /**
+     * Input Object Format
+     * {
+            at: String,
+            avatar: String,
+            createdAt: String,
+            message: String,
+            nickname: String,
+            objectId: String,
+            replyId: String,
+            rootId: String,
+            updatedAt: String,
+            user_id: String,
+     * }
+     *
+     * Output Object Format
+     * {
+            at: String,
+            avatar: String,
+            createdAt: String,
+            message: String,
+            nickname: String,
+            objectId: String,
+            replyId: String,
+            rootId: String,
+            updatedAt: String,
+            user_id: String,
+            replyCounts: Number,
+            replys: Array
+     * }
+     *
+     * Upload Object Format
+     * {
+            at: String,
+            avatar: String,
+            email:String,
+            message: String,
+            nickname: String,
+            replyId: String,
+            rootId: String,
+            uniqStr: String,
+     * }
+     */
     import cloneDeep from 'clone-deep'
-    import DateFetch from "./DataFetch";
+    import APILayer from "./APILayer";
     export default {
-        name: "CommentsResolve",
-        extends:DateFetch,
+        name: "ConvertLayer",
+        extends:APILayer,
         data() {
             return {
                 noMoreRemoteData:false,
@@ -27,37 +70,70 @@
          * 更少的API调用，但是会获取更多的数据
          */
         methods: {
-            uploadComments(uploadField){
-                return this.uploadMessageToServer(uploadField)
-                .then(data=>{
-                    if(!data)return null
-                    this.insertInToList(this.allCommentData,data)
+            /**
+             * Required
+             */
+            fetchPageViews (uniqStr){
+                return this.fetchPageViews_server(uniqStr)
+            },
+            /**
+             * Required
+             */
+            fetchCounts(uniqStr){
+                return this.fetchCounts_server(uniqStr)
+            },
+            /**
+             * Required
+             */
+            updateComment(id,message){
+                return this.updateComment_server(id,message)
+                .then((data)=>{
+                    this.__updateCommentAfterEdit__(id,data)
                     return data
                 })
             },
-            insertInToList(list,data){
-                // 插入到对应的嵌套层，同时也要更新replyCounts数字
-                if(data.replyId){
-                    let replyData=this.objectIdToData[data.replyId]
-                    if(replyData.replys==null){
-                        replyData.replys=[]
-                        replyData.replyCounts=0
-                    }
-                    replyData.replys.unshift(data)
-                    replyData.replyCounts++
-                }else{
-                    list.unshift(data)
-                }
-                this.objectIdToData[data.objectId]=data
+            /**
+             * Required
+             */
+            uploadComment(uploadField){
+                return this.uploadComment_server(uploadField)
+                .then(data=>{
+                    if(!data)return null
+                    this.__insertInToList__(this.allCommentData,data)
+                    return data
+                })
+                .catch(_=>{
+                    return null
+                })
             },
-            fetchResolveComments(params) {
+            /**
+             * Required
+             */
+            fetchCurrentUser(){
+                return this.signIn_server()
+                .then(user=>{
+                    let simpleUser={
+                        id:user.id,
+                        sessionToken:user.attributes.sessionToken,
+                        username:user.attributes.username,
+                    }
+                    this.$serverLessBBS.loggedUser=simpleUser
+                    return simpleUser
+                })
+            },
+            /**
+             * Required
+             * @param params
+             * @returns {Promise<Object>} {data, total}
+             */
+            fetchComments(params) {
                 /*
                     uniqStr         // 页面唯一值
                     rootId          // rootId， 用于插入数据
                     replyId         // 存在则搜索对应replyId的数据
                     page            // 数据页码
                     pageSize        // 数据每页条数
-                    deepReply       // 存在则深度搜索每一个回复（嵌套回复）
+                    deepReply       // Boolean, 存在则深度搜索每一个回复（嵌套回复）
                     deepReplyCounts // 存在则深度搜索回复数量
                  */
                 let {uniqStr, replyId, pageSize, page, deepReply, deepReplyCounts} = params
@@ -72,11 +148,11 @@
                     let filterData = nestedData
                     if (replyId) {
                         filterData = this.objectIdToData[replyId].replys
-                        if (deepReply!=null) {
+                        if (deepReply) {
                             filterData = this.__deepSearchReply__(filterData)
                         }
                     }else{
-                        if (deepReply!=null) {
+                        if (deepReply) {
                             filterData = Object.values(this.objectIdToData)
                         }
                     }
@@ -100,9 +176,30 @@
                     })
                 })
             },
+
+            __updateCommentAfterEdit__(objectId,editData){
+                let comment=this.objectIdToData[objectId]
+                comment.message=editData.message
+                comment.updatedAt=editData.updatedAt
+            },
+            __insertInToList__(list,data){
+                // 插入到对应的嵌套层，同时也要更新replyCounts数字
+                if(data.replyId){
+                    let replyData=this.objectIdToData[data.replyId]
+                    if(replyData.replys==null){
+                        replyData.replys=[]
+                        replyData.replyCounts=0
+                    }
+                    replyData.replys.unshift(data)
+                    replyData.replyCounts++
+                }else{
+                    list.unshift(data)
+                }
+                this.objectIdToData[data.objectId]=data
+            },
             __getMoreData__(uniqStr) {
                 console.log('mock network')
-                return this.fetchDataFromServer(uniqStr)
+                return this.fetchComments_server(uniqStr)
                 .then(flatList=>{
                     this.noMoreRemoteData = flatList.length < 1000;
                     return flatList

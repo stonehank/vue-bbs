@@ -42,12 +42,12 @@ function modify_hljs(createHljs){
   }
   markdown=createMarked(_hljs)
 }
-window.xss=xss
+// window.xss=xss
 function xssMarkdown(content){
   if(!content)return ''
   // console.log(content)
   // return markdown(xss(content))
-  console.log(markdown(content))
+  // console.log(markdown(content))
   return xss(markdown(content),{
     whiteList:{
       ...xss.whiteList,

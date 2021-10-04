@@ -5,7 +5,7 @@
                 :small="small"
                 :details="details"
                 :needUpdateData="needUpdateData"
-                :startReply="startReply"
+                :updateCommentAsync="updateCommentAsync"
                 :loadList="loadList"
                 :curNest="curNest"
                 :maxNest="maxNest"
@@ -25,8 +25,8 @@
             needUpdateData:Object,
             curNest:Number,
             maxNest:Number,
-            startReply:Function,
             loadList:Function,
+            updateCommentAsync:Function,
         }
     }
 </script>

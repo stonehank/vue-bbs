@@ -10,7 +10,7 @@
                          :curNest="curNest"
                          :maxNest="maxNest"
                          :needUpdateData="needUpdateData"
-                         :startReply="startReply"
+                         :updateCommentAsync="updateCommentAsync"
                          :load-list="loadList"
             />
         </div>
@@ -28,7 +28,7 @@
             curNest:Number,
             maxNest:Number,
             needUpdateData:Object,
-            startReply:Function,
+            updateCommentAsync:Function,
             loadList:Function,
         }
     }

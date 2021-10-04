@@ -1,6 +1,6 @@
 <template>
-    <div class="text-center" v-if="loading">
-        <Loading  :size="48" />
+    <div class="text-center" v-if="loading || userLoading">
+        <Loading :size="48" />
     </div>
     <section v-else>
         <p class="text-md">
@@ -10,8 +10,8 @@
                 :curNest="0"
                 :maxNest="maxNest"
                 :needUpdateData="needUpdateData"
+                :updateCommentAsync="updateCommentAsync"
                 :list="list"
-                :startReply="startReply"
                 :loadList="loadList"
         />
         <p class="text-center text-secondary" v-if="noMoreData && list.length===0">还没有任何评论~</p>
@@ -34,6 +34,12 @@
     export default {
         name: "CommentList",
         components: {Loading, MoreButton, Button, ListRender, MessageCard},
+        provide(){
+            return {
+                updateCommentAsync:this.updateCommentAsync
+            }
+        },
+        inject:['fetchCurrentUser'],
         props:{
             uniqStr:{
                 type:String,
@@ -48,17 +54,16 @@
             maxNest:{
                 default:1
             },
-            startReply:Function,
-            fetchResolveComments:Function,
+            fetchComments:Function,
         },
         watch:{
             needUpdateData(newV){
-              console.log('needUpdate')
+              // console.log('needUpdate')
                 if(!newV)return
                 this.loadData()
             },
             maxNest(newV){
-                console.log('nest change ',newV)
+                // console.log('nest change ',newV)
                 this.page=1
                 this.list=[]
                 this.loading=true
@@ -68,6 +73,7 @@
         data(){
             return {
                 loading:true,
+                userLoading:true,
                 page:1,
                 list:[],
                 total:null,
@@ -80,7 +86,6 @@
              * 获取数据-> count
              * 根据maxNest，editable, pageSize，分页方式进行渲染
              * */
-            console.log(this)
             this.init()
             document.addEventListener('click',bindATagSmoothScroll)
         },
@@ -89,14 +94,17 @@
         },
         methods:{
             init(){
-                console.log('start load list')
+                // console.log('start load list')
                 this.loading=true
+                this.userLoading=true
                 this.loadData()
+                this.fetchCurrentUser()
+                .finally(()=>this.userLoading=false)
             },
             loadData(){
                 return this.loadList({
                     page:this.page,
-                    deepReply:this.maxNest <=0 ? 0 : null,
+                    deepReply:this.maxNest <=0,
                     deepReplyCounts:this.maxNest <= 1,
                 })
                 .then(({data,total})=>{
@@ -115,11 +123,18 @@
                     pageSize:this.pageSize,
                     ...parameters
                 }
-                return this.fetchResolveComments(params)
+                return this.fetchComments(params)
             },
             loadMore(){
                 this.page+=1
                 return this.loadData()
+            },
+            updateCommentAsync(id,editData){
+                let data=this.list.find(obj=>obj.objectId===id)
+                if(data){
+                    data.message=editData.message
+                    data.updatedAt=editData.updatedAt
+                }
             }
         }
     }

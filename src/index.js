@@ -3,6 +3,7 @@ import ServerlessBBSCounter from "./components/ServerlessBBSCounter";
 import ServerlessBBSPageView from "./components/ServerlessBBSPageView";
 import register from './register'
 
+
 let install = function (Vue, options) {
   register(Vue,options)
   Vue.component('vue-bbs',ServerlessBBSPanel)

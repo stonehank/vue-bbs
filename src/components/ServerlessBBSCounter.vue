@@ -4,14 +4,13 @@
 </template>
 
 <script>
-    // import {fetchCounts} from "../utils/API-Core";
-    import DataFetch from "./DataFetchAndResolve/DataFetch";
+    import Layer from "../layer";
     import Loading from "./commons/Loading";
     import '../assets/css/common.scss'
     export default {
         name: "ServerlessBBSCounter",
         components: {Loading},
-        extends:DataFetch,
+        extends:Layer,
         props:{
             uniqStr:{
                 type:String,
@@ -53,7 +52,7 @@
                 .finally(()=>this.loading=false)
             },
             loadCounter(){
-                return this.fetchCountFromServer(this.uniqStr)
+                return this.fetchCounts(this.uniqStr)
             },
         }
     }

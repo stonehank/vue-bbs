@@ -5,6 +5,7 @@ export default function scrollToEle(ele, {
     smooth=false,
     offset=0
 }={}) {
+    console.log('scroll',ele)
     if (!ele) return Promise.resolve(false)
     if (!(ele instanceof Element)) {
         ele = ele.$el
@@ -14,7 +15,7 @@ export default function scrollToEle(ele, {
     }
     let targetEle=ele
     let parentNode = getScrollParent(targetEle)
-    // console.log('scroll step1',ele,parentNode)
+    console.log('scroll step1',ele,parentNode)
     return new Promise((res)=>{
         while (parentNode) {
             scrollTo(targetEle, parentNode, {
@@ -57,6 +58,9 @@ function getScrollParent(node) {
         return null;
     }
     if (!(parentNode instanceof Element)) {
+        if(parentNode instanceof Document){
+            return parentNode
+        }
         return null
     }
     let overflowY=getComputedStyle(parentNode)['overflow-y']

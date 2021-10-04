@@ -11,7 +11,8 @@
 </template>
 
 <script>
-    import {replaceAtToTag, xssMarkdown} from "../../../utils/String";
+    import { xssMarkdown} from "../../../utils/String";
+    import {convertToAtMessage, renderAtMessage} from "../../../utils/handlerAtTag";
 
     export default {
         name: "MessageRender",
@@ -32,7 +33,7 @@
         },
         computed:{
             renderMessage(){
-                return xssMarkdown(replaceAtToTag(this.details.message,this.details.replyId,this.details.at))
+                return xssMarkdown(renderAtMessage(convertToAtMessage(this.details.message,this.details.at),this.details.replyId,this.details.at))
             }
         },
         methods:{

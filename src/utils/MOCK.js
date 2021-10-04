@@ -72,7 +72,7 @@ function createReplyData(counts=500,times=2){
 }
 
 
-function fetchDataFromServer(params) {
+function fetchListFromServer(params) {
   /*
     uniqStr  // 页面唯一值
  */
@@ -83,5 +83,5 @@ function fetchDataFromServer(params) {
 }
 
 module.exports={
-  fetchDataFromServer
+  fetchListFromServer
 }
