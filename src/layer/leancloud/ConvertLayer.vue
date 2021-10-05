@@ -88,6 +88,7 @@
             updateComment(id,message){
                 return this.updateComment_server(id,message)
                 .then((data)=>{
+                    if(!data)return null
                     this.__updateCommentAfterEdit__(id,data)
                     return data
                 })

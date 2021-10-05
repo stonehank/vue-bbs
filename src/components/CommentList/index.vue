@@ -109,10 +109,10 @@
                 })
                 .then(({data,total})=>{
                     this.list=cloneDeep(data)
+                    // this.total=data.length
                     this.total=this.$serverLessBBS.countMap.has(this.uniqStr)
                         ? this.$serverLessBBS.countMap.get(this.uniqStr)
                         : total
-                    // this.total=total
                     this.noMoreData=data.length>=total
                 })
                 .finally(()=>this.loading=false)

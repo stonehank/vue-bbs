@@ -4,7 +4,8 @@
 
 ## 目前支持的服务器
 
-* Leancloud
+* [Leancloud](#Leancloud客户端设置)
+* [Firebase](#Firebase客户端设置)
 
 
 ## 安装
@@ -84,6 +85,142 @@ register(Vue,{
 ```
 
 
+
+## Leancloud客户端设置
+
+#### APP ID/Key
+
+[登录](https://console.leancloud.app/login) `LeanCloud`, 
+进入 [控制台](https://console.leancloud.app/apps/) 
+后点击创建应用
+
+![](https://i.loli.net/2019/06/21/5d0c995c86fac81746.jpg)
+
+应用创建好以后，进入刚刚创建的应用，选择左下角的`设置`>`应用Key`，然后就能看到你的`APP ID`和`APP Key`了：
+
+![](https://i.loli.net/2019/06/21/5d0c997a60baa24436.jpg)
+
+#### serverURLs
+
+`serverURLs`在应用内部会尝试自动获取，如果发现获取失败，请手动提供
+刚刚创建的应用，选择左下角的`设置`>`应用Key`，找到`Request 域名` 第一行
+![](./doc/images/setting3.png)
+
+#### 初始化
+
+应用内部直接发送一条测试消息，系统会自动创建对应的`Comment`表和`Counter`表
+
+#### 配置 Comment 表
+
+在客户端 `Comment` 表中(也可能是你的自定义名称`CommentClass`)
+
+1. 勾选 `mail`列的`客户端不可见`
+    
+    ![setting1](./doc/images/setting2.png)
+
+2. 关闭`add_fields`权限
+
+    ![setting5](./doc/images/setting5.png)
+    
+#### 配置 _User 表
+
+当你在`LeanCloud`客户端开启一个新的应用后，新创建的应用的 _User 表除了`create`，其他全部权限关闭
+
+![setting1](./doc/images/setting1.png)
+
+至此， Leancloud 构建完毕！
+
+
+## Firebase客户端设置
+
+[登录](https://console.firebase.google.com/) `Google`账号并且进入`Firebase`控制台，创建项目
+
+#### apiKey
+
+点击左上方小齿轮，进入`项目设置`
+
+![firebase-2](./doc/images/firebase-2.png)
+
+找到你的`项目id`和`api密钥`
+
+![firebase-3](./doc/images/firebase-3.png)
+
+要使用`Firebase`，`vue-bbs`需要接收
+
+```
+apiKey: [Your API Key]
+authDomain: [Your Project ID].firebaseio.com
+projectId: [Your Project ID]
+```
+#### Authentication配置
+
+点击左侧栏`Authentication`，点击`启用`->`设置登录方法`，选择`电子邮件`，点击`启用`，`保存`
+
+
+#### Firebase配置
+
+
+* 启用Database
+
+    左侧栏选择`Firestore Database`，选择创建数据库
+    
+    ![firebase-1](./doc/images/firebase-1.png)
+    
+    选择生产模式或者测试模式都可以，后面会覆盖掉规则配置;
+    
+    选择地区位置后，创建成功
+
+* 重写规则
+
+    复制以下规则，注意其中方括号内`[YourComments]`和`[YourCountres]`需要替换成你自定义的存放评论表格名称和存放页面浏览量的表名称
+    
+    点击发布
+    ```
+    service cloud.firestore {
+      match /databases/{database}/documents {
+        match /[YourComments]/{id} {
+          allow read: if true;
+          allow create: if true;
+          allow update: if  request.auth != null 
+          &&  request.auth.uid == resource.data.user_id 
+          allow delete: if false;
+        }
+         match /[YourComments]_private/{id} {
+          allow read: if false;
+          allow create: if true;
+          allow update: if  request.auth != null 
+          &&  request.auth.uid == id;
+          allow delete: if false;
+        }
+         match /[YourCounter]/{id} {
+          allow read: if true;
+          allow create: if true;
+          allow update: if true;
+          allow delete: if false;
+        }
+      }
+    }
+    ```
+
+* 建立索引
+
+    点击`索引` -> `复合索引` ->创建
+    
+    ![firebase-index-0](./doc/images/firebase-index-0.png)
+    
+    填写你的`Comment`表格名称
+    
+    ![firebase-index-1](./doc/images/firebase-index-1.png)
+    
+    添加字段`uniqStr`和`createdAt`，分别为`Ascending`和`Descending`, 选择查询范围`集合`
+    
+    ![firebase-index-2](./doc/images/firebase-index-2.png)
+    
+    点击创建索引，索引构建大概会消耗几分钟时间
+
+
+至此， Firebase 构建完毕！
+
 ## 选项
 
 #### 注册
@@ -118,56 +255,6 @@ register(Vue,{
 |:---:|:---:|:---:|:---:|
 |size|否|Loading图标大小|16|
 |[uniqStr](#uniqStr)|否|一个独立值，用于获取当前页面评论|location.origin + location.pathname|
-
-
-## 客户端设置
-
-#### APP ID/Key
-
-请先 [登录](https://leancloud.cn/dashboard/login.html#/signin) 或 
-[注册](https://leancloud.cn/dashboard/login.html#/signup) `LeanCloud`, 
-进入 [控制台](https://leancloud.cn/dashboard/applist.html#/apps) 
-后点击左下角 [创建应用](https://leancloud.cn/dashboard/applist.html#/newapp)
-
-![](https://i.loli.net/2019/06/21/5d0c995c86fac81746.jpg)
-
-应用创建好以后，进入刚刚创建的应用，选择左下角的`设置`>`应用Key`，然后就能看到你的`APP ID`和`APP Key`了：
-
-![](https://i.loli.net/2019/06/21/5d0c997a60baa24436.jpg)
-
-#### serverURLs
-
-`serverURLs`在应用内部会尝试自动获取，如果发现获取失败，请手动提供
-刚刚创建的应用，选择左下角的`设置`>`应用Key`，找到`Request 域名` 第一行
-![](./doc/images/setting3.png)
-
-#### 创建 Comment 表
-
-1. 在应用菜单->数据储存->结构化数据，点击`创建Class`，输入表名称`Comment`(也可以自定义)，自定义需要将名称传递给`react-valine`
-
-    权限选择无限制，如图
-    
-    ![setting-4](./doc/images/setting4.png)
-
-2. 直接发送一条测试消息，系统会自动创建 `Comment`表
-
-#### 配置 Comment 表
-
-在客户端 `Comment` 表中(也可能是你的自定义名称`CommentClass`)
-
-1. 勾选 `mail`列的`客户端不可见`
-    
-    ![setting1](./doc/images/setting2.png)
-
-2. 如果表内字段为空，发送一条测试消息，让系统创建字段，接着可以关闭`add_fields`权限
-
-    ![setting5](./doc/images/setting5.png)
-    
-#### 配置 _User 表
-
-当你在`LeanCloud`客户端开启一个新的应用后，新创建的应用的 _User 表默认关闭了 find 权限，需要手动打开find权限，设置为`所有用户`
-
-![setting1](./doc/images/setting1.png)
 
 
 ## Q & A

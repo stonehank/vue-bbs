@@ -19,7 +19,7 @@
         },
         computed:{
             previewMessage(){
-                if(!this.preview)return
+                if(!this.preview)return ''
                 return xssMarkdown(renderAtMessage(this.message,this.replyId,this.at))
             }
         }

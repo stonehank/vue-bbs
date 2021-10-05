@@ -230,6 +230,13 @@ let CustomAV = {
       this.permissionsById['*']['write'] = allowed
     }
 
+    setReadAccess(userId, allowed){
+      checkType(allowed, 'Boolean')
+      if (this.permissionsById[userId] == null) {
+        this.permissionsById[userId] = {}
+      }
+      this.permissionsById[userId]['read'] = allowed
+    }
     setWriteAccess(userId, allowed){
       checkType(allowed, 'Boolean')
       if (this.permissionsById[userId] == null) {

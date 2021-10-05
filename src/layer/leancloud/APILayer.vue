@@ -152,30 +152,6 @@
                         return 0
                     }
                 })
-
-                // return new Promise(resolve=>{
-                //     if(this.countMap.has(uniqStr)){
-                //         return resolve(this.countMap.get(uniqStr))
-                //     }
-                //     let query= new AV.Query(CommentClass)
-                //     return query.equalTo('uniqStr',uniqStr)
-                //     .equalTo('replyId','')
-                //     .count()
-                //     .then((counts)=>{
-                //         this.countMap.set(uniqStr,counts)
-                //         return resolve(counts)
-                //     })
-                //     .catch(ex=>{
-                //         if(ex.code===101){
-                //             this.countMap.set(uniqStr,0)
-                //             return resolve(0)
-                //         }else{
-                //             console.error('Error happen in fetch count',ex)
-                //             this.countMap.set(uniqStr,0)
-                //             return resolve(0)
-                //         }
-                //     })
-                // })
             },
             /**
              *
@@ -226,8 +202,11 @@
                 let user= new AV.User(UserClass)
                 user.setUsername(newRandOwnerCode)
                 user.setPassword(newRandOwnerCode)
+                console.log('signUp_server',user.id,JSON.stringify(user))
                 let acl = new AV.ACL();
-                acl.setPublicReadAccess(true);
+                acl.setPublicReadAccess(false);
+                // acl.setReadAccess(user.id,true);
+                // acl.setWriteAccess(user.id,true);
                 acl.setPublicWriteAccess(false);
                 user.setACL(acl);
                 console.log('Can not get, try create new user')
@@ -261,6 +240,7 @@
                 .then(data=>data.attributes)
                 .catch(err=>{
                     console.error('update error!',err)
+                    return null
                 })
             },
 

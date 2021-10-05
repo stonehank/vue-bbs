@@ -196,6 +196,7 @@
                 let id=this.details.objectId
                 this.updateComment(id,this.editMessage)
                 .then(data=>{
+                    if(!data)return
                     this.closeEdit()
                     this.updateCommentAsync(id,data)
                 })

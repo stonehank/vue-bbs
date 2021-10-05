@@ -19,11 +19,17 @@
 <script>
     import TextField from "../src/components/commons/UI/TextField";
     import Button from "../src/components/commons/UI/Button";
+    import VueBbs from "../src/components/ServerlessBBSPanel";
+    import VueBbsCounter from "../src/components/ServerlessBBSCounter";
+    import VueBbsPageview from "../src/components/ServerlessBBSPageView";
     export default {
-        name: "App",
+        name: "AppLocal",
         components:{
             Button,
             TextField,
+            VueBbsPageview,
+            VueBbs,
+            VueBbsCounter
         },
         data(){
             return {

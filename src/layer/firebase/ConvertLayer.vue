@@ -35,12 +35,18 @@
              * Required
              */
             updateComment(id,message){
-
+                return this.updateComment_server(id,message)
+                .then((data)=>{
+                    if(!data)return null
+                    this.__updateCommentAfterEdit__(id,data)
+                    return data
+                })
             },
             /**
              * Required
              */
             uploadComment(uploadField){
+                console.log(uploadField)
                 return this.uploadComment_server(uploadField)
                 .then(data=>{
                     if(!data)return null
@@ -114,7 +120,8 @@
                         setTimeout(() => {
                             res({
                                 data:result,
-                                total:this.allCommentData.length
+                                /* 在max-nest为0的情况下，result是扁平的可能会更长 */
+                                total:Math.max(this.allCommentData.length,result.length),
                             })
                         }, 200)
                     })
@@ -146,6 +153,7 @@
                 console.log('mock network')
                 return this.fetchComments_server(uniqStr)
                 .then(flatList=>{
+                    console.log('get list',flatList)
                     this.noMoreRemoteData = flatList.length < 1000;
                     return flatList
                 })

@@ -40,27 +40,27 @@ $warning-color:#FFC107;
     text-decoration: none;
     color:var(--bbs-info-color);
     &:hover{
-      text-decoration: none;
+      color:var(--bbs-primary)
     }
   }
 
-  a:hover::before {
-    content:'';
-    width: 100%;
-    left: 0;
-    right: auto;
-  }
-
-  a::before {
-    content: '';
-    position: absolute;
-    width: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background: var(--bbs-primary);
-    transition: width .3s ease;
-  }
+  //a:hover::before {
+  //  content:'';
+  //  width: 100%;
+  //  left: 0;
+  //  right: auto;
+  //}
+  //
+  //a::before {
+  //  content: '';
+  //  position: absolute;
+  //  width: 0;
+  //  right: 0;
+  //  bottom: 0;
+  //  height: 1px;
+  //  background: var(--bbs-primary);
+  //  transition: width .3s ease;
+  //}
 
   .position-relative{
     position:relative;

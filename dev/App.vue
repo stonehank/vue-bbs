@@ -10,7 +10,7 @@
         <span>页面浏览量：<vue-bbs-pageview /></span>
         <vue-bbs
                 :nest="nest"
-                :pageSize="50"
+                :pageSize="10"
                 :editable="false"
         />
     </section>

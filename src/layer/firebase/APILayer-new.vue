@@ -3,25 +3,9 @@
 </template>
 
 <script>
-    import { initializeApp } from "firebase/app";
-    import {
-        getFirestore,
-        increment,
-        getDoc,
-        setDoc,
-        updateDoc,
-        doc,
-        collection,
-        getDocs,
-        query,
-        where,
-        orderBy,
-        limit,
-        writeBatch
-    } from 'firebase/firestore/lite';
-    import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword  } from "firebase/auth";
+    import firebase from 'firebase'
+    import 'firebase/firestore'
     import {getFromCache,randUniqueString,setCache} from "../../utils";
-    import AV from "../leancloud/CustomAV";
     let ownerCodeKey='serverless_bbs_ownerCode'
     let oldRandOwnerCode=getFromCache(ownerCodeKey)
     let newRandOwnerCode=oldRandOwnerCode || randUniqueString()
@@ -41,29 +25,26 @@
         },
         methods:{
             serverInit(){
-                let {apiKey, authDomain,projectId} = this.$serverLessBBS
                 try{
-                    initializeApp({
-                        apiKey: apiKey,
-                        authDomain: authDomain,
-                        projectId: projectId
+                    firebase.initializeApp({
+                        apiKey: 'AIzaSyBtD9cKCV0pkqoIUU9OoTxP4mfOgqgGyfo',
+                        authDomain: 'test-bb11c.firebaseio.com',
+                        projectId: 'test-bb11c'
                     })
                 }catch(_){
 
                 }
-                this.db= getFirestore()
+                this.db= firebase.firestore()
                 return Promise.resolve()
             },
             fetchComments_server(uniqStr){
                 let {CommentClass}=this.$serverLessBBS
-                let q=query(
-                    collection(this.db, CommentClass),
-                    where('uniqStr','==',uniqStr),
-                    orderBy("createdAt",'desc'),
-                    limit(1000));
-                return getDocs(q)
+                return this.db.collection(CommentClass)
+                .where('uniqStr','==',uniqStr)
+                .orderBy("createdAt",'desc')
+                .limit(1000)
+                .get()
                 .then((querySnapshot) => {
-                    console.log(querySnapshot)
                     let list=[]
                     querySnapshot.forEach((doc) => {
                         list.push({
@@ -73,31 +54,17 @@
                     })
                     return list
                 })
-                .catch(error=>{
-                    console.log('error',error)
-                    console.error(error.code,error.message)
-                    return []
-                })
             },
             fetchCounts_server(uniqStr,includeReply){
                 let {CommentClass}=this.$serverLessBBS
-                let commentRef= collection(this.db, CommentClass)
+                let commentRef= this.db.collection(CommentClass)
                 let searchPromise
                 if(includeReply){
-                    searchPromise=getDocs(query(
-                        commentRef,
-                        where('uniqStr','==',uniqStr)
-                    ))
+                    searchPromise=commentRef.where('uniqStr','==',uniqStr).get().then(querySnapshot => querySnapshot.docs.length)
                 }else{
-                    searchPromise=getDocs(query(
-                        commentRef,
-                        where('uniqStr','==',uniqStr),
-                        where('replyId','==','')
-                    ))
+                    searchPromise=commentRef.where('uniqStr','==',uniqStr).where('replyId','==','').get().then(querySnapshot => querySnapshot.docs.length)
                 }
-                return searchPromise
-                .then(querySnapshot => querySnapshot.docs.length)
-                .then((counts)=>{
+                return searchPromise.then((counts)=>{
                     this.countMap.set(uniqStr,counts)
                     return counts
                 })
@@ -113,17 +80,17 @@
                     return this.pageviewMap.get(uniqStr)
                 }
                 let {CounterClass} = this.$serverLessBBS
-                let docQuery= doc(this.db, CounterClass,encodeURIComponent(uniqStr))
-                return getDoc(docQuery)
+                let docQuery= this.db.collection(CounterClass).doc(encodeURIComponent(uniqStr))
+                return docQuery
+                .get()
                 .then(querySnapshot => {
                     let data=querySnapshot.data()
                     if(data){
-                        updateDoc(docQuery,{time:increment(1)})
+                        docQuery.update({time:firebase.firestore.FieldValue.increment(1)})
                         this.pageviewMap.set(uniqStr,data.time + 1)
                         return data.time + 1
                     }else{
-                        setDoc(docQuery,{time:1})
-                        // docQuery.set({time:1})
+                        docQuery.set({time:1})
                         this.pageviewMap.set(uniqStr,1)
                         return 1
                     }
@@ -151,37 +118,15 @@
                 let privateField={
                     email
                 }
-                console.log('ready upload')
                 return this.signIn_server()
                 .then((user)=>{
-                    console.log('login done,', user)
-                    publicField.user_id=user.id || user.uid || ''
+                    publicField.user_id=user.id || user.uid
                     return this.__uploadBatch__(user,publicField,privateField)
-                })
-                .catch(err=>{
-                    console.error(err)
-                    throw new Error(err)
                 })
             },
 
-            updateComment_server(id,message){
-                const {editMode,CommentClass}=this.$serverLessBBS
-                if(!editMode)return Promise.reject(null)
-                let docQuery= doc(this.db, CommentClass,id)
-                let returnData={
-                    message:message,
-                    updatedAt:new Date().toISOString()
-                }
-                return this.signIn_server()
-                .then(()=>updateDoc(docQuery,{
-                    message:message,
-                    updatedAt:new Date().toISOString()
-                }))
-                .then(()=>returnData)
-                .catch(err=>{
-                    console.error(err)
-                    return null
-                })
+            updateComment_server(){
+
             },
 
             signIn_server(){
@@ -191,9 +136,7 @@
                 let email= this.__getOwnerEmail__(oldRandOwnerCode)
                 if(oldRandOwnerCode){
                     console.log('before login',email)
-                    const auth = getAuth();
-                    return signInWithEmailAndPassword(auth,email, oldRandOwnerCode)
-                    // return firebase.auth().signInWithEmailAndPassword(email, oldRandOwnerCode)
+                    return firebase.auth().signInWithEmailAndPassword(email, oldRandOwnerCode)
                     .then((userCredential) => {
                         console.log('login success')
                         return userCredential.user
@@ -215,11 +158,9 @@
                 if(!editMode)return Promise.resolve(defaultUser)
                 newRandOwnerCode=randUniqueString()
                 let email= this.__getOwnerEmail__(newRandOwnerCode)
-                const auth = getAuth();
-                return createUserWithEmailAndPassword(auth,email, newRandOwnerCode)
-                // return firebase.auth().createUserWithEmailAndPassword(email, newRandOwnerCode)
+                return firebase.auth().createUserWithEmailAndPassword(email, newRandOwnerCode)
                 .then((userCredential) => {
-                    // console.log('register success')
+                    console.log('register success')
                     setCache(ownerCodeKey,newRandOwnerCode)
                     oldRandOwnerCode=newRandOwnerCode
                     return userCredential.user
@@ -235,13 +176,15 @@
             },
             __uploadBatch__(user,publicField,privateField){
                 let {CommentClass}=this.$serverLessBBS
-                let batch = writeBatch(this.db);
-                let publicDoc = doc(collection(this.db,CommentClass));
+                let batch = this.db.batch();
+                let publicDoc = this.db.collection(CommentClass).doc();
+                // console.log('start batch commit',user,publicDoc,publicField)
                 batch.set(publicDoc, publicField);
-                if(user.id){
-                    let privateDoc = doc(this.db,CommentClass+'_private',user.id)
-                    batch.set(privateDoc,privateField,{ merge: true })
-                }
+
+                let privateDoc = this.db.collection(CommentClass+'_private').doc(user.id)
+                batch.set(privateDoc,privateField,{ merge: true })
+
+
                 return batch.commit().then(() => {
                     console.log('All success!')
                     return {
