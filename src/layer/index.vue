@@ -4,11 +4,11 @@
 
 <script>
 
-    import ConvertLayer from "./leancloud/ConvertLayer";
+    import LayerInterface from "./LayerInterface";
 
     export default {
         name: "Layer",
-        extends:ConvertLayer,
+        extends:LayerInterface,
         data(){
             return {
                 initialLoading:true,

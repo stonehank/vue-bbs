@@ -28,7 +28,8 @@
   },
   "homepage": "https://github.com/stonehank/vue-bbs#README",
   "peerDependencies": {
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "firebase": "^9.1.1"
   },
   "dependencies": {
     "blueimp-md5": "^2.12.0",

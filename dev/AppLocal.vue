@@ -6,9 +6,9 @@
             <Button class="mr-2" color="info" @click="nest+=1">+</Button>
             <Button color="info" @click="nest-=1">-</Button>
         </div>
-        <span>评论数：<vue-bbs-counter /></span>
-        <span>页面浏览量：<vue-bbs-pageview /></span>
-        <vue-bbs
+<!--        <span>评论数：<vue-bbs-counter /></span>-->
+<!--        <span>页面浏览量：<vue-bbs-pageview /></span>-->
+        <VueBBSPanel
                 :nest="nest"
                 :pageSize="10"
                 :editable="false"
@@ -19,17 +19,15 @@
 <script>
     import TextField from "../src/components/commons/UI/TextField";
     import Button from "../src/components/commons/UI/Button";
-    import VueBbs from "../src/components/ServerlessBBSPanel";
-    import VueBbsCounter from "../src/components/ServerlessBBSCounter";
-    import VueBbsPageview from "../src/components/ServerlessBBSPageView";
+    import VueBBSPanel from "./VueBbs";
     export default {
         name: "AppLocal",
         components:{
+            VueBBSPanel,
             Button,
             TextField,
-            VueBbsPageview,
-            VueBbs,
-            VueBbsCounter
+            // VueBbsPageview,
+            // VueBbsCounter
         },
         data(){
             return {

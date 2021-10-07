@@ -21,7 +21,6 @@
     } from 'firebase/firestore/lite';
     import { getAuth, createUserWithEmailAndPassword,signInWithEmailAndPassword  } from "firebase/auth";
     import {getFromCache,randUniqueString,setCache} from "../../utils";
-    import AV from "../leancloud/CustomAV";
     let ownerCodeKey='serverless_bbs_ownerCode'
     let oldRandOwnerCode=getFromCache(ownerCodeKey)
     let newRandOwnerCode=oldRandOwnerCode || randUniqueString()
@@ -29,23 +28,20 @@
         id:null,
         email:null,
     }
-    // console.log(firebase.firestore())
     export default {
         name: "APILayer",
         data(){
             return {
                 db:{},
-                countMap:this.$serverLessBBS.countMap,
-                pageviewMap:this.$serverLessBBS.pageviewMap,
             }
         },
         methods:{
             serverInit(){
-                let {apiKey, authDomain,projectId} = this.$serverLessBBS
+                let {apiKey,projectId} = this.$serverLessBBS
                 try{
                     initializeApp({
                         apiKey: apiKey,
-                        authDomain: authDomain,
+                        authDomain: projectId + '.firebaseio.com',
                         projectId: projectId
                     })
                 }catch(_){
@@ -97,34 +93,24 @@
                 }
                 return searchPromise
                 .then(querySnapshot => querySnapshot.docs.length)
-                .then((counts)=>{
-                    this.countMap.set(uniqStr,counts)
-                    return counts
-                })
                 .catch(ex=>{
                     console.error('Error happen in fetch count',ex)
-                    this.countMap.set(uniqStr,0)
                     return 0
                 })
             },
 
             fetchPageViews_server(uniqStr){
-                if(this.pageviewMap.has(uniqStr)){
-                    return this.pageviewMap.get(uniqStr)
-                }
-                let {CounterClass} = this.$serverLessBBS
+                let {CounterClass,pageviewMap} = this.$serverLessBBS
+                if(pageviewMap.has(uniqStr))return pageviewMap.get(uniqStr)
                 let docQuery= doc(this.db, CounterClass,encodeURIComponent(uniqStr))
                 return getDoc(docQuery)
                 .then(querySnapshot => {
                     let data=querySnapshot.data()
                     if(data){
                         updateDoc(docQuery,{time:increment(1)})
-                        this.pageviewMap.set(uniqStr,data.time + 1)
                         return data.time + 1
                     }else{
                         setDoc(docQuery,{time:1})
-                        // docQuery.set({time:1})
-                        this.pageviewMap.set(uniqStr,1)
                         return 1
                     }
                 })
@@ -208,7 +194,7 @@
                         return this.signUp_server()
                     });
                 }
-
+                return this.signUp_server()
             },
             signUp_server(){
                 const {editMode}=this.$serverLessBBS

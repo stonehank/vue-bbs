@@ -14,9 +14,11 @@ module.exports= {
   entry: {
     index:path.join( src, 'index.js'),
     register:path.join( src, 'register.js'),
-    'vue-bbs':path.join( src, 'components/ServerlessBBSPanel.vue'),
-    'vue-bbs-counter':path.join( src, 'components/ServerlessBBSCounter.vue'),
-    'vue-bbs-pageview':path.join( src, 'components/ServerlessBBSPageView.vue')
+    'lib/vue-bbs':path.join( src, 'components/ServerlessBBSPanel.vue'),
+    'lib/vue-bbs-counter':path.join( src, 'components/ServerlessBBSCounter.vue'),
+    'lib/vue-bbs-pageview':path.join( src, 'components/ServerlessBBSPageView.vue'),
+    'backend/firebase':path.join( src, 'layer/firebase/ConvertLayer.vue'),
+    'backend/leancloud':path.join( src, 'layer/leancloud/ConvertLayer.vue')
   },
   output: {
     path: path.join(__dirname, 'dist'),

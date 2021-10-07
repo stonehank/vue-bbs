@@ -22,7 +22,7 @@
 `<vue-bbs-pageview />` 当前页面的页面浏览量
 
 
-#### 全局引入
+##### Leancloud
 
 ```js
 // index.js
@@ -33,57 +33,31 @@ Vue.use(bbs,{
     appId:"#########-####",
     appKey:"#######",
     serverURLs:"#####.##.##.com",
-    CommentClass:"Comment",
-    CounterClass:"Counter",
+    editMode:false,
+    CommentClass:"Comments",
+    CounterClass:"Counters",
 })
 ```
-接着，便可以在任意处使用 `<vue-bbs>`,`<vue-bbs-counter>`,`<vue-bbs-pageview>`
 
+##### Firebase
 
-#### 局部引入
-
-首先注册
 ```js
 // index.js
 import Vue from 'vue'
-import register from 'vue-bbs/dist/register'
+import bbs from 'vue-bbs'
+import FirebaseLayer from 'vue-bbs/backend/firebase'
 
-register(Vue,{
-    appId:"#########-####",
-    appKey:"#######",
-    serverURLs:"#####.##.##.com",
-    CommentClass:"Comment",
-    CounterClass:"Counter",
+Vue.use(bbs,{
+    apiKey: '############',
+    projectId: '########',
+    editMode:false,
+    CommentClass:"Comments",
+    CounterClass:"Counters",
+    server:FirebaseLayer,
 })
 ```
 
-在`some-component.vue`使用
-```vue
-
-<template>
-    <section>
-        <span>评论数：<vue-bbs-counter /></span>
-        <span>页面浏览量：<vue-bbs-pageview /></span>
-        <vue-bbs :nest="2" :pageSize="10" />
-    </section>
-</template>
-
-<script>
-    import VueBbs from "vue-bbs/dist/vue-bbs";
-    import VueBbsCounter from "vue-bbs/dist/vue-bbs-counter";
-    import VueBbsPageview from "vue-bbs/dist/vue-bbs-pageview";
-
-    export default {
-        name: "App",
-        components:{
-            VueBbs,
-            VueBbsCounter,
-            VueBbsPageview,
-        },
-    }
-</script>
-```
-
+接着，便可以在任意处使用 `<vue-bbs>`,`<vue-bbs-counter>`,`<vue-bbs-pageview>`
 
 
 ## Leancloud客户端设置
@@ -96,7 +70,7 @@ register(Vue,{
 
 ![](https://i.loli.net/2019/06/21/5d0c995c86fac81746.jpg)
 
-应用创建好以后，进入刚刚创建的应用，选择左下角的`设置`>`应用Key`，然后就能看到你的`APP ID`和`APP Key`了：
+应用创建好以后，进入刚刚创建的应用，选择左下角的`设置`>`应用凭证`，然后就能看到你的`APP ID`和`APP Key`了：
 
 ![](https://i.loli.net/2019/06/21/5d0c997a60baa24436.jpg)
 
@@ -135,7 +109,7 @@ register(Vue,{
 
 [登录](https://console.firebase.google.com/) `Google`账号并且进入`Firebase`控制台，创建项目
 
-#### apiKey
+#### apiKey和projectId
 
 点击左上方小齿轮，进入`项目设置`
 
@@ -149,7 +123,6 @@ register(Vue,{
 
 ```
 apiKey: [Your API Key]
-authDomain: [Your Project ID].firebaseio.com
 projectId: [Your Project ID]
 ```
 #### Authentication配置
@@ -223,7 +196,7 @@ projectId: [Your Project ID]
 
 ## 选项
 
-#### 注册
+#### 注册Leancloud
 
 |参数|是否必须|说明|默认值|
 |:---:|:---:|:---:|:---:|
@@ -232,6 +205,19 @@ projectId: [Your Project ID]
 |serverURLs|否|LeanCloud的请求API([怎样获取](#serverURLs))|自动获取|
 |CommentClass|是|在`leancloud`上存放**评论**的Class名称|Comment|
 |CounterClass|是|在`leancloud`上存放**页面阅读量**的Class名称|Counter|
+|editMode|否|是否开启评论本人可编辑模式|false|
+|server|否|VueComponent，处理了`API层`和`转换层`逻辑|LeancloudComponent|
+
+#### 注册Firebase
+
+|参数|是否必须|说明|默认值|
+|:---:|:---:|:---:|:---:|
+|apiKey|是|firebase上的API网络密钥|null|
+|projectId|是|firebase上的项目ID|null|
+|CommentClass|是|在`firebase`上存放**评论**的Class名称|Comment|
+|CounterClass|是|在`firebase`上存放**页面阅读量**的Class名称|Counter|
+|editMode|否|是否开启评论本人可编辑模式|false|
+|server|是|VueComponent，处理了`API层`和`转换层`逻辑，需要手动传入`backend/firebase`|/|
 
 #### Component vue-bbs
 
@@ -256,6 +242,19 @@ projectId: [Your Project ID]
 |size|否|Loading图标大小|16|
 |[uniqStr](#uniqStr)|否|一个独立值，用于获取当前页面评论|location.origin + location.pathname|
 
+## 应用逻辑和扩展
+
+`vue-bbs`逻辑分为三层式
+
+
+![vue-bbs-layers](./doc/images/vue-bbs-layer.png)
+
+第一层为`API`层，命名`APILayer.vue`，主要负责服务初始化，数据获取和错误处理
+
+第二层为`转换接口`层，命名`ConvertLayer.vue`，负责将远程数据转换为`vue-bbs`需要的数据格式，
+同时，目前为了减少`API`请求次数，采取一次性获取更多数据的策略，在转换层则需要对数据进行分页处理。
+
+第三层为`应用层`，也就是`vue-bbs`的前端处理逻辑，在通过数据转换后，保证了数据格式的统一性。
 
 ## Q & A
 
@@ -274,3 +273,46 @@ projectId: [Your Project ID]
 
 1. 全局唯一
 2. `uniqStr`对相同的页面一定有相同的值
+
+
+### 颜色主题管理
+
+你可以很轻松的重写`vue-bbs`的颜色配置
+
+重写为`dark`模式
+```scss
+/* variable-bbs-dark.scss */
+
+$background-color: #262626;
+$primary: #1484b4;
+$secondary: #a05c15;
+
+$text-primary:rgba(255,255,255,.87);
+$text-secondary:rgba(255, 255, 255, .6);
+$text-muted:rgba(255, 255, 255, .18);
+
+$separator-color: #717171;
+$separator-background: #393939;
+$success-color:#4caf50;
+$error-color: #b71c1c;
+$info-color:#2196f3;
+$warning-color:#FFC107;
+
+.serverless-bbs{
+  --bbs-background-color: #{$background-color};
+  --bbs-primary: #{$primary};
+  --bbs-secondary: #{$secondary};
+  --bbs-text-primary: #{$text-primary};
+  --bbs-text-secondary: #{$text-secondary};
+  --bbs-text-muted: #{$text-muted};
+  --bbs-separator-color: #{$separator-color};
+  --bbs-separator-background: #{$separator-background};
+  --bbs-success-color: #{$success-color};
+  --bbs-error-color: #{$error-color};
+  --bbs-info-color: #{$info-color};
+  --bbs-warning-color: #{$warning-color};
+}
+```
+
+接着在你的项目中`import './variable-bbs-dark.scss'`
+

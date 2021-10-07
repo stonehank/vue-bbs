@@ -24,12 +24,20 @@
              */
             fetchPageViews (uniqStr){
                 return this.fetchPageViews_server(uniqStr)
+                .then(counts=>{
+                    this.$serverLessBBS.pageviewMap.set(uniqStr,counts)
+                    return counts
+                })
             },
             /**
              * Required
              */
             fetchCounts(uniqStr){
                 return this.fetchCounts_server(uniqStr)
+                .then(counts=>{
+                    this.$serverLessBBS.countMap.set(uniqStr,counts)
+                    return counts
+                })
             },
             /**
              * Required
@@ -46,10 +54,13 @@
              * Required
              */
             uploadComment(uploadField){
-                console.log(uploadField)
                 return this.uploadComment_server(uploadField)
                 .then(data=>{
                     if(!data)return null
+                    if(!data.replyId){
+                        let count=this.$serverLessBBS.countMap.get(data.uniqStr)
+                        this.$serverLessBBS.countMap.set(data.uniqStr,count+1)
+                    }
                     this.__insertInToList__(this.allCommentData,data)
                     return data
                 })
@@ -63,6 +74,7 @@
             fetchCurrentUser(){
                 return this.signIn_server()
                 .then(user=>{
+                    console.log('user',user)
                     let simpleUser={
                         id:user.uid,
                         email:user.email,

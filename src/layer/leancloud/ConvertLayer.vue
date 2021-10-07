@@ -3,49 +3,6 @@
 </template>
 
 <script>
-    /**
-     * Input Object Format
-     * {
-            at: String,
-            avatar: String,
-            createdAt: String,
-            message: String,
-            nickname: String,
-            objectId: String,
-            replyId: String,
-            rootId: String,
-            updatedAt: String,
-            user_id: String,
-     * }
-     *
-     * Output Object Format
-     * {
-            at: String,
-            avatar: String,
-            createdAt: String,
-            message: String,
-            nickname: String,
-            objectId: String,
-            replyId: String,
-            rootId: String,
-            updatedAt: String,
-            user_id: String,
-            replyCounts: Number,
-            replys: Array
-     * }
-     *
-     * Upload Object Format
-     * {
-            at: String,
-            avatar: String,
-            email:String,
-            message: String,
-            nickname: String,
-            replyId: String,
-            rootId: String,
-            uniqStr: String,
-     * }
-     */
     import cloneDeep from 'clone-deep'
     import APILayer from "./APILayer";
     export default {
@@ -75,12 +32,20 @@
              */
             fetchPageViews (uniqStr){
                 return this.fetchPageViews_server(uniqStr)
+                .then(counts=>{
+                    this.$serverLessBBS.pageviewMap.set(uniqStr,counts)
+                    return counts
+                })
             },
             /**
              * Required
              */
             fetchCounts(uniqStr){
                 return this.fetchCounts_server(uniqStr)
+                .then(counts=>{
+                    this.$serverLessBBS.countMap.set(uniqStr,counts)
+                    return counts
+                })
             },
             /**
              * Required
@@ -100,6 +65,10 @@
                 return this.uploadComment_server(uploadField)
                 .then(data=>{
                     if(!data)return null
+                    if(!data.replyId){
+                        let count=this.$serverLessBBS.countMap.get(data.uniqStr)
+                        this.$serverLessBBS.countMap.set(data.uniqStr,count+1)
+                    }
                     this.__insertInToList__(this.allCommentData,data)
                     return data
                 })

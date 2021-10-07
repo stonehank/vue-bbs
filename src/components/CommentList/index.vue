@@ -62,12 +62,11 @@
                 if(!newV)return
                 this.loadData()
             },
-            maxNest(newV){
-                // console.log('nest change ',newV)
-                this.page=1
-                this.list=[]
-                this.loading=true
-                this.loadData()
+            maxNest(){
+                this.reload()
+            },
+            pageSize(){
+                this.reload()
             }
         },
         data(){
@@ -116,6 +115,12 @@
                     this.noMoreData=data.length>=total
                 })
                 .finally(()=>this.loading=false)
+            },
+            reload(){
+                this.page=1
+                this.list=[]
+                this.loading=true
+                this.loadData()
             },
             loadList(parameters){
                 let params={

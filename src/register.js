@@ -2,6 +2,8 @@ export default function (Vue, options) {
     let defaultOptions={
         appId:null,
         appKey:null,
+        apiKey:null,
+        projectId:null,
         editMode:false,
         serverURLs:null,
         CommentClass:"Comment",

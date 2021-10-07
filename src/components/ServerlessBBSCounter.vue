@@ -39,7 +39,7 @@
         },
         mounted(){
             this.loopTimer=setInterval(()=>{
-                this.counts=this.countMap.get(this.uniqStr)
+                this.counts=this.$serverLessBBS.countMap.get(this.uniqStr)
             },1000)
         },
         destroyed() {

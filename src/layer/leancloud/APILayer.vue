@@ -31,8 +31,6 @@
         data(){
             return {
                 commentsPage:1,
-                countMap:this.$serverLessBBS.countMap,
-                pageviewMap:this.$serverLessBBS.pageviewMap,
                 errorCodeMsg: {
                     "100": "Initialization failed, Please check your appId and appKey.",
                     "401": "Unauthorized operation, Please check your appId and appKey.",
@@ -69,10 +67,10 @@
                 newCounter.set('title', title)
                 newCounter.set('time', 1)
                 return newCounter.save().then(() => {
-                    this.pageviewMap.set(uniqStr,1)
                     return 1
                 }).catch(ex => {
                     console.error(this.errorCodeMsg[ex.code],ex)
+                    return 1
                 });
             },
             /**
@@ -85,10 +83,8 @@
              * @returns {Promise}<Number>
              */
             fetchPageViews_server(uniqStr,title){
-                if(this.pageviewMap.has(uniqStr)){
-                    return this.pageviewMap.get(uniqStr)
-                }
-                let {CounterClass} = this.$serverLessBBS
+                let {CounterClass,pageviewMap} = this.$serverLessBBS
+                if(pageviewMap.has(uniqStr))return pageviewMap.get(uniqStr)
                 let query= new AV.Query(CounterClass)
                 return query.equalTo('uniqStr',uniqStr)
                 .find()
@@ -106,19 +102,14 @@
                         item.increment("time")
                         item.set('title',title)
                         return item.save().then(()=>{
-                            this.pageviewMap.set(uniqStr,updateTime)
                             return updateTime
                         }).catch(()=>{
                             return updateTime-1
                         })
                     }
                 }).catch(ex=>{
-                    if(ex.code===101){
-                        // 不存在表格 创建
-                        return this.__generatePageViews__(uniqStr,title)
-                    }else{
-                        console.error(this.errorCodeMsg[ex.code],ex)
-                    }
+                    console.error(this.errorCodeMsg[ex.code],ex)
+                    return this.__generatePageViews__(uniqStr,title)
                 })
             },
 
@@ -139,16 +130,13 @@
                     searchPromise=query.equalTo('uniqStr',uniqStr).equalTo('replyId','').count()
                 }
                 return searchPromise.then((counts)=>{
-                    this.countMap.set(uniqStr,counts)
                     return counts
                 })
                 .catch(ex=>{
                     if(ex.code===101){
-                        this.countMap.set(uniqStr,0)
                         return 0
                     }else{
                         console.error('Error happen in fetch count',ex)
-                        this.countMap.set(uniqStr,0)
                         return 0
                     }
                 })
@@ -289,10 +277,6 @@
                     if(data.error){
                         console.error(data.error)
                         return null
-                    }
-                    if(!data.replyId){
-                        let count=this.countMap.get(data.uniqStr)
-                        this.countMap.set(data.uniqStr,count+1)
                     }
                     return data
                 })

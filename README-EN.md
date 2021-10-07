@@ -6,6 +6,7 @@ English / [中文](https://github.com/stonehank/vue-bbs/blob/main/README.md)
 ## Support Server
 
 * Leancloud
+* Firebase
 
 
 ## Install
@@ -22,7 +23,7 @@ English / [中文](https://github.com/stonehank/vue-bbs/blob/main/README.md)
 `<vue-bbs-pageview />` Current page total page viewer
 
 
-#### Global
+##### Leancloud
 
 ```js
 // index.js
@@ -33,61 +34,33 @@ Vue.use(bbs,{
     appId:"#########-####",
     appKey:"#######",
     serverURLs:"#####.##.##.com",
-    CommentClass:"Comment",
-    CounterClass:"Counter",
+    editMode:false,
+    CommentClass:"Comments",
+    CounterClass:"Counters",
 })
 ```
-Then you can use `<vue-bbs>`,`<vue-bbs-counter>`,`<vue-bbs-pageview>` anywhere
 
+##### Firebase
 
-#### Local
-
-Register
 ```js
 // index.js
 import Vue from 'vue'
-import register from 'vue-bbs/dist/register'
+import bbs from 'vue-bbs'
+import FirebaseLayer from 'vue-bbs/backend/firebase'
 
-register(Vue,{
-    appId:"#########-####",
-    appKey:"#######",
-    serverURLs:"#####.##.##.com",
-    CommentClass:"Comment",
-    CounterClass:"Counter",
+Vue.use(bbs,{
+    apiKey: '############',
+    projectId: '########',
+    editMode:false,
+    CommentClass:"Comments",
+    CounterClass:"Counters",
+    server:FirebaseLayer,
 })
 ```
 
-Use in `some-component.vue`
-```vue
-
-<template>
-    <section>
-        <span>评论数：<vue-bbs-counter /></span>
-        <span>页面浏览量：<vue-bbs-pageview /></span>
-        <vue-bbs :nest="2" :pageSize="10" />
-    </section>
-</template>
-
-<script>
-    import VueBbs from "vue-bbs/dist/vue-bbs";
-    import VueBbsCounter from "vue-bbs/dist/vue-bbs-counter";
-    import VueBbsPageview from "vue-bbs/dist/vue-bbs-pageview";
-
-    export default {
-        name: "App",
-        components:{
-            VueBbs,
-            VueBbsCounter,
-            VueBbsPageview,
-        },
-    }
-</script>
-```
-
-
 ## Props
 
-#### Register
+#### Leancloud
 
 |prop|required|description|default|
 |:---:|:---:|:---:|:---:|
@@ -96,6 +69,21 @@ Use in `some-component.vue`
 |serverURLs|optional|LeanCloud api address([How to get](#serverURLs))|null|
 |CommentClass|required|Comment class name in leancloud|Comment|
 |CounterClass|required|Pageview class name in leancloud|Counter|
+|editMode|optional|Able to edit owner message|false|
+|server|optional|VueComponent，handle the server API and Data logic|LeancloudComponent|
+
+#### Firebase
+
+|参数|是否必须|说明|默认值|
+|:---:|:---:|:---:|:---:|
+|apiKey|是|apiKey in firebase|null|
+|projectId|是|projectId in firebase|null|
+|CommentClass|是|Comment class name in firebase|Comment|
+|CounterClass|是|Pageview class name in firebase|Counter|
+|editMode|optional|Able to edit owner message|false|
+|server|是|VueComponent，need manually pass`backend/firebase`|LeancloudComponent|
+
+
 
 #### Component vue-bbs
 
@@ -124,50 +112,7 @@ Use in `some-component.vue`
 
 ## Client Setting
 
-#### APP ID/Key
-
-[login](https://leancloud.cn/dashboard/login.html#/signin) or 
-[register](https://leancloud.cn/dashboard/login.html#/signup) `LeanCloud`, 
-enter [controller](https://leancloud.cn/dashboard/applist.html#/apps) 
-click [create app](https://leancloud.cn/dashboard/applist.html#/newapp)
-
-![](https://i.loli.net/2019/06/21/5d0c995c86fac81746.jpg)
-
-
-![](https://i.loli.net/2019/06/21/5d0c997a60baa24436.jpg)
-
-#### serverURLs
-
-![](./doc/images/setting3.png)
-
-#### 创建 Comment 表
-
-1. 在应用菜单->数据储存->结构化数据，点击`创建Class`，输入表名称`Comment`(也可以自定义)，自定义需要将名称传递给`react-valine`
-
-    权限选择无限制，如图
-    
-    ![setting-4](./doc/images/setting4.png)
-
-2. 直接发送一条测试消息，系统会自动创建 `Comment`表
-
-#### 配置 Comment 表
-
-在客户端 `Comment` 表中(也可能是你的自定义名称`CommentClass`)
-
-1. 勾选 `mail`列的`客户端不可见`
-    
-    ![setting1](./doc/images/setting2.png)
-
-2. 如果表内字段为空，发送一条测试消息，让系统创建字段，接着可以关闭`add_fields`权限
-
-    ![setting5](./doc/images/setting5.png)
-    
-#### 配置 _User 表
-
-当你在`LeanCloud`客户端开启一个新的应用后，新创建的应用的 _User 表默认关闭了 find 权限，需要手动打开find权限，设置为`所有用户`
-
-![setting1](./doc/images/setting1.png)
-
+Translating...
 
 ## Q & A
 
