@@ -172,7 +172,6 @@
                     && message.validate()
             },
             submit() {
-                this.submitLoading = true
                 let params = {
                     avatar: this.avatar,
                     nickname: this.nickname,
@@ -184,6 +183,7 @@
                     at: this.at
                 }
                 if (!this.validate()) return
+                this.submitLoading = true
                 this.uploadComment(params)
                 .then((data) => {
                     if (!data) {
