@@ -12,8 +12,8 @@
 
 <script>
     import Vue from 'vue'
-    import bbs from '../src'
-    import FirebaseServer from '../src/layer/firebase/ConvertLayer'
+    import bbs from '../dist'
+    import FirebaseServer from '../dist/backend/firebase'
     Vue.use(bbs,{
         editMode:true,
         CommentClass:"Comments_demo",

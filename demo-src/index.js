@@ -1,6 +1,5 @@
 import App from "./App"
 import Vue from 'vue'
-import './variable-dark.scss'
 
 
 let vm= new Vue({

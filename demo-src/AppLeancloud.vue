@@ -12,7 +12,7 @@
 
 <script>
     import Vue from 'vue'
-    import bbs from '../src'
+    import bbs from '../dist'
     Vue.use(bbs,{
         appId:"rYWlO5pCuJAiMPhGtmhvAaGv-MdYXbMMI",
         appKey:"SDfR94mcAqIigfFpzMYfKTxT",
