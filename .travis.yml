@@ -23,7 +23,7 @@ after_script:
 
 branches:
   only:
-    - mainv
+    - main
 env:
  global:
    - GH_REF: github.com/stonehank/vue-bbs
