@@ -8,6 +8,9 @@ English / [中文](https://github.com/stonehank/vue-bbs/blob/main/README.md)
 * Leancloud
 * Firebase
 
+## DEMO
+[https://stonehank.github.io/vue-bbs](https://stonehank.github.io/vue-bbs)
+
 
 ## Install
 

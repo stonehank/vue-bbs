@@ -7,6 +7,9 @@
 * [Leancloud](#Leancloud客户端设置)
 * [Firebase](#Firebase客户端设置)
 
+## DEMO
+[https://stonehank.github.io/vue-bbs](https://stonehank.github.io/vue-bbs)
+
 
 ## 安装
 
