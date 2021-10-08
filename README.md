@@ -101,7 +101,7 @@ Vue.use(bbs,{
     
 #### 配置 _User 表
 
-当你在`LeanCloud`客户端开启一个新的应用后，新创建的应用的 _User 表除了`create`，其他全部权限关闭
+当你在`LeanCloud`客户端开启一个新的应用后，新创建的应用的 _User 表除了`create`和`get`，其他全部权限关闭
 
 ![setting1](./doc/images/setting1.png)
 

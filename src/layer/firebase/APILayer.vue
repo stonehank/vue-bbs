@@ -199,7 +199,6 @@
             signUp_server(){
                 const {editMode}=this.$serverLessBBS
                 if(!editMode)return Promise.resolve(defaultUser)
-                newRandOwnerCode=randUniqueString()
                 let email= this.__getOwnerEmail__(newRandOwnerCode)
                 const auth = getAuth();
                 return createUserWithEmailAndPassword(auth,email, newRandOwnerCode)

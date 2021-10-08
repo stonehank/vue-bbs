@@ -186,7 +186,6 @@
             signUp_server(){
                 const {editMode,UserClass}=this.$serverLessBBS
                 if(!editMode)return Promise.resolve(defaultUser)
-                newRandOwnerCode=randUniqueString()
                 let user= new AV.User(UserClass)
                 user.setUsername(newRandOwnerCode)
                 user.setPassword(newRandOwnerCode)
