@@ -216,7 +216,7 @@
                 this.at = replyName
                 this.replyId = replyId
                 this.rootId = rootId
-                console.log(this.message,this.at,convertToAtMessage(this.message,this.at))
+                // console.log(this.message,this.at,convertToAtMessage(this.message,this.at))
                 this.message=convertToAtMessage(this.message,this.at)
                 // this.message = `@${replyName} ` + this.message
                 // window.location.hash = "reply"

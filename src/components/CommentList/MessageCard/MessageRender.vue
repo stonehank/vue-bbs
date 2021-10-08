@@ -12,7 +12,7 @@
 
 <script>
     import { xssMarkdown} from "../../../utils/String";
-    import {convertToAtMessage, renderAtMessage} from "../../../utils/handlerAtTag";
+    import {addAtHTMLTag} from "../../../utils/handlerAtTag";
 
     export default {
         name: "MessageRender",
@@ -33,7 +33,8 @@
         },
         computed:{
             renderMessage(){
-                return xssMarkdown(renderAtMessage(convertToAtMessage(this.details.message,this.details.at),this.details.replyId,this.details.at))
+                return addAtHTMLTag(xssMarkdown(this.details.message),this.details.replyId,this.details.at)
+                // return xssMarkdown(renderAtMessage(convertToAtMessage(this.details.message,this.details.at),this.details.replyId,this.details.at))
             }
         },
         methods:{

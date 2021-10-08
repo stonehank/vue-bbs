@@ -300,7 +300,7 @@
         display: flex;
         align-items: center;
     }
-    .at{
+    .bbs-at{
         text-decoration: none;
         color: var(--bbs-text-secondary);
         font-weight: 500;

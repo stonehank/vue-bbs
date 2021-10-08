@@ -8,7 +8,7 @@
 
 <script>
     import { xssMarkdown} from "../../utils/String";
-    import {renderAtMessage} from "../../utils/handlerAtTag";
+    import {addAtHTMLTag,convertToPureMessage} from "../../utils/handlerAtTag";
     export default {
         name: "PreviewRender",
         props:{
@@ -20,7 +20,8 @@
         computed:{
             previewMessage(){
                 if(!this.preview)return ''
-                return xssMarkdown(renderAtMessage(this.message,this.replyId,this.at))
+                return addAtHTMLTag(xssMarkdown(convertToPureMessage(this.message,this.at)),this.replyId,this.at)
+                // return xssMarkdown(renderAtMessage(this.message,this.replyId,this.at))
             }
         }
     }
