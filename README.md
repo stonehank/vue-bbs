@@ -8,7 +8,10 @@
 * [Firebase](#Firebase客户端设置)
 
 ## DEMO
-[https://stonehank.github.io/vue-bbs](https://stonehank.github.io/vue-bbs)
+
+[项目实例(深/浅主题)](https://stonehank.github.io/projects#project-comments)
+
+[测试](https://stonehank.github.io/vue-bbs)
 
 
 ## 安装
@@ -85,7 +88,15 @@ Vue.use(bbs,{
 
 #### 初始化
 
-应用内部直接发送一条测试消息，系统会自动创建对应的`Comment`表和`Counter`表
+应用内部调用
+
+`<vue-bbs><vue-bbs/>`和
+
+`<vue-bbs-pageview></vue-bbs-pageview>`，
+
+发送一条测试消息，系统会自动创建对应的`Comment`表和`Counter`表；当创建完所需表后，在服务设置里面勾选`禁止客户端创建Class`
+
+![leancloud-forbid-class](./doc/images/leancloud-forbid-class.png)
 
 #### 配置 Comment 表
 
@@ -101,9 +112,11 @@ Vue.use(bbs,{
     
 #### 配置 _User 表
 
-当你在`LeanCloud`客户端开启一个新的应用后，新创建的应用的 _User 表除了`create`和`get`，其他全部权限关闭
+当你在`LeanCloud`客户端开启一个新的应用后，新创建的应用的 _User 表除了`create`和`find`，其他全部权限关闭
 
 ![setting1](./doc/images/setting1.png)
+
+
 
 至此， Leancloud 构建完毕！
 

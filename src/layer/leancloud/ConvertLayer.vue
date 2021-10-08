@@ -82,10 +82,13 @@
             fetchCurrentUser(){
                 return this.signIn_server()
                 .then(user=>{
-                    let simpleUser={
-                        id:user.id,
-                        sessionToken:user.attributes.sessionToken,
-                        username:user.attributes.username,
+                    let simpleUser=user
+                    if(user.attributes){
+                        simpleUser={
+                            id:user.id,
+                            sessionToken:user.attributes.sessionToken,
+                            username:user.attributes.username,
+                        }
                     }
                     this.$serverLessBBS.loggedUser=simpleUser
                     return simpleUser
