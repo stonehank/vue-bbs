@@ -112,7 +112,7 @@
                     this.total=this.$serverLessBBS.countMap.has(this.uniqStr)
                         ? this.$serverLessBBS.countMap.get(this.uniqStr)
                         : total
-                    this.noMoreData=data.length>=total
+                    this.noMoreData=data.filter(obb=>obj.replyId==null).length>=total
                 })
                 .finally(()=>this.loading=false)
             },

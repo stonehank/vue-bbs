@@ -49,11 +49,12 @@
     import ActionsController from "./ActionsController/index"
     import MessageInput from "./MessageInput/index"
     import {convertToAtMessage, convertToPureMessage} from "../utils/handlerAtTag";
-    import Layer from "../layer";
+    // import Layer from "../layer";
+    import LayerInterface from "../layer/LayerInterface";
 
     export default {
         name: "ServerlessBBSPanel",
-        extends: Layer,
+        extends: LayerInterface,
         provide() {
             return {
                 updateComment:this.updateComment,
@@ -80,7 +81,6 @@
                 type: Number,
                 default: 5
             },
-            editable: Boolean,
             nest: {
                 type: [String, Number],
                 default: 1
@@ -253,6 +253,7 @@
 
         }
     }
+
 </script>
 
 <style scoped lang="scss">

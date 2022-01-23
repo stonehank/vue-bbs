@@ -3,10 +3,12 @@
 </template>
 
 <script>
-    import FirebaseLayer from '../dist/backend/firebase'
+    // import LeancloudLayer from '../src/layer/leancloud/ConvertLayer'
+    import ServerLayer from '../dist/backend/firebase'
+    // import VueBbs from "../src/components/ServerlessBBSPanel";
     import VueBbs from "../dist/lib/vue-bbs";
-    VueBbs.extends.extends=FirebaseLayer
-    // console.log(VueBbs)
+    import registerServer from "../dist/registerServer";
+    registerServer(VueBbs,ServerLayer)
     export default {
         inheritAttrs:false,
         name: "VueBBSPanel",

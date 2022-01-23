@@ -28,6 +28,8 @@
 `<vue-bbs-pageview />` 当前页面的页面浏览量
 
 
+### 全局引入
+
 ##### Leancloud
 
 ```js
@@ -64,6 +66,111 @@ Vue.use(bbs,{
 ```
 
 接着，便可以在任意处使用 `<vue-bbs>`,`<vue-bbs-counter>`,`<vue-bbs-pageview>`
+
+### 局部引入
+
+##### Leancloud
+
+```js
+// index.js
+import register from "vue-bbs/register";
+register(Vue,{
+    appId:"#########-####",
+    appKey:"#######",
+    serverURLs:"#####.##.##.com",
+    editMode:false,
+    CommentClass:"Comments",
+    CounterClass:"Counters",
+})
+```
+
+```vue
+// 需要引入的文件.vue
+<template>
+    <vue-bbs-counter uniqStr="contact-page" />
+    <vue-bbs :nest="2" :pageSize="10" uniqStr="contact-page" />
+</template>
+
+<script>
+    import VueBbs from "vue-bbs/lib/vue-bbs";
+    import VueBbsCounter from "vue-bbs/lib/vue-bbs-counter";
+    import ServerLayer from 'vue-bbs/backend/leancloud'
+    import registerServer from "vue-bbs/registerServer";
+    registerServer(VueBbs,ServerLayer)
+    registerServer(VueBbsCounter,ServerLayer)
+    export default {
+        name: "VueBBSPanel",
+        components:{
+            VueBbs,
+            VueBbsCounter
+        }
+    }
+</script>
+```
+
+##### Firebase
+
+```js
+// index.js
+import register from "vue-bbs/register";
+register(Vue,{
+    editMode:false,
+    CommentClass:"Comments_demo",
+    CounterClass:"Counters_demo",
+    apiKey: 'AIzaSyAQTct1trRnIB7QLE9RZ6qZgHGahVNrvco',
+    projectId: 'servelessbbs',
+})
+```
+
+```vue
+// 需要引入的文件.vue
+<template>
+    <vue-bbs-counter uniqStr="contact-page" />
+    <vue-bbs :nest="2" :pageSize="10" uniqStr="contact-page" />
+</template>
+
+<script>
+    import VueBbs from "vue-bbs/lib/vue-bbs";
+    import VueBbsCounter from "vue-bbs/lib/vue-bbs-counter";
+    import ServerLayer from 'vue-bbs/backend/firebase'
+    import registerServer from "vue-bbs/registerServer";
+    registerServer(VueBbs,ServerLayer)
+    registerServer(VueBbsCounter,ServerLayer)
+    export default {
+        name: "VueBBSPanel",
+        components:{
+            VueBbs,
+            VueBbsCounter
+        }
+    }
+</script>
+```
+
+---
+
+如果你的应用需要多处使用，那么多次调用必然繁琐，可以将三个组件分别封装，就不需要重复的调用`registerServer`，
+例如创建一个自定义组件：`CustomVueBbs`，封装如下，之后便可以直接调用`CustomVueBbs`
+
+```vue
+// CustomVueBbs.vue
+<template>
+    <vue-bbs v-bind="$attrs" />
+</template>
+
+<script>
+    import VueBbs from "vue-bbs/lib/vue-bbs";
+    import ServerLayer from 'vue-bbs/backend/firebase'
+    import registerServer from "vue-bbs/registerServer";
+    registerServer(VueBbs,ServerLayer)
+    export default {
+        name: "VueBBSPanel",
+        inheritAttrs:false,
+        components:{
+            VueBbs,
+        }
+    }
+</script>
+```
 
 
 ## Leancloud客户端设置

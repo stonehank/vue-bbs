@@ -6,6 +6,12 @@
 
     export default {
         name: "LayerInterface",
+        data(){
+            return {
+                // Detect the app initial is done
+                initialLoading:true,
+            }
+        },
         methods: {
             /**
              * @return Promise

@@ -6,11 +6,11 @@
 <script>
     import Loading from "./commons/Loading";
     import '../assets/css/common.scss'
-    import Layer from "../layer";
+    import LayerInterface from "../layer/LayerInterface";
     export default {
         name: "ServerlessBBSPageView",
         components: {Loading},
-        extends:Layer,
+        extends:LayerInterface,
         props:{
             uniqStr:{
                 type:String,

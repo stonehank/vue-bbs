@@ -10,6 +10,7 @@
         extends:APILayer,
         data() {
             return {
+                initialLoading:true,
                 noMoreRemoteData:false,
                 allCommentData: [],
                 objectIdToData: {},
@@ -17,8 +18,9 @@
                 checkOnNextInsert: false
             }
         },
-
-        mounted() {
+        mounted(){
+            this.serverInit()
+            .then(()=>this.initialLoading=false)
         },
         /**
          * STEP1: 一次性获取1000个数据

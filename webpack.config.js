@@ -14,6 +14,7 @@ module.exports= {
   entry: {
     index:path.join( src, 'index.js'),
     register:path.join( src, 'register.js'),
+    registerServer:path.join( src, 'registerServer.js'),
     'lib/vue-bbs':path.join( src, 'components/ServerlessBBSPanel.vue'),
     'lib/vue-bbs-counter':path.join( src, 'components/ServerlessBBSCounter.vue'),
     'lib/vue-bbs-pageview':path.join( src, 'components/ServerlessBBSPageView.vue'),

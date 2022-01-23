@@ -11,7 +11,6 @@
         <VueBBSPanel
                 :nest="nest"
                 :pageSize="10"
-                :editable="false"
         />
     </section>
 </template>

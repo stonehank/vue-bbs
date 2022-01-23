@@ -11,12 +11,17 @@
         extends:APILayer,
         data() {
             return {
+                initialLoading:true,
                 noMoreRemoteData:false,
                 allCommentData: [],
                 objectIdToData: {},
                 waitNextInserted: [],
                 checkOnNextInsert: false
             }
+        },
+        mounted(){
+            this.serverInit()
+            .then(()=>this.initialLoading=false)
         },
         methods:{
             /**

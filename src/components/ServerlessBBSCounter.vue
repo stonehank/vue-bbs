@@ -4,13 +4,13 @@
 </template>
 
 <script>
-    import Layer from "../layer";
+    import LayerInterface from "../layer/LayerInterface";
     import Loading from "./commons/Loading";
     import '../assets/css/common.scss'
     export default {
         name: "ServerlessBBSCounter",
         components: {Loading},
-        extends:Layer,
+        extends:LayerInterface,
         props:{
             uniqStr:{
                 type:String,
