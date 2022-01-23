@@ -78,7 +78,7 @@
                 default: window.location.origin + window.location.pathname
             },
             pageSize: {
-                type: Number,
+                type: [String, Number],
                 default: 5
             },
             nest: {

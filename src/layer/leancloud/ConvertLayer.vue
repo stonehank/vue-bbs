@@ -145,7 +145,7 @@
                         setTimeout(() => {
                             res({
                                 data:result,
-                                total:this.allCommentData.length
+                                total:Math.max(this.allCommentData.length,result.length,filterData.length)
                             })
                         }, 200)
                     })

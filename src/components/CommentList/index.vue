@@ -46,7 +46,7 @@
                 default:window.location.origin+window.location.pathname
             },
             pageSize:{
-                type:Number,
+                type:[Number,String],
                 default:10
             },
             editable:Boolean,
@@ -112,7 +112,7 @@
                     this.total=this.$serverLessBBS.countMap.has(this.uniqStr)
                         ? this.$serverLessBBS.countMap.get(this.uniqStr)
                         : total
-                    this.noMoreData=data.filter(obj=>obj.replyId==null).length>=total
+                    this.noMoreData=data.length>=total
                 })
                 .finally(()=>this.loading=false)
             },
@@ -125,7 +125,7 @@
             loadList(parameters){
                 let params={
                     uniqStr:this.uniqStr,
-                    pageSize:this.pageSize,
+                    pageSize:+this.pageSize,
                     ...parameters
                 }
                 return this.fetchComments(params)

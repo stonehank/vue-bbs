@@ -24,8 +24,8 @@
     export default {
         name: "AppLeancloud",
         props:{
-            nest:Number,
-            pageSize:Number,
+            nest:[String, Number],
+            pageSize:[String, Number],
         }
     }
 </script>

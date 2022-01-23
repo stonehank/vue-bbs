@@ -138,7 +138,7 @@
                             res({
                                 data:result,
                                 /* 在max-nest为0的情况下，result是扁平的可能会更长 */
-                                total:Math.max(this.allCommentData.length,result.length),
+                                total:Math.max(this.allCommentData.length,result.length,filterData.length),
                             })
                         }, 200)
                     })

@@ -7,13 +7,13 @@
         </div>
         <label>设置Nest</label>
         <div style="display:flex;align-items: start;">
-            <TextField v-model="nest" class="mr-2" style="max-width:80px;" />
+            <TextField v-model.number="nest" class="mr-2" style="max-width:80px;" />
             <Button class="mr-2" color="info" @click="nest+=1">+</Button>
             <Button color="info" @click="nest-=1">-</Button>
         </div>
         <label>设置PageSize</label>
         <div style="display:flex;align-items: start;">
-            <TextField v-model="pageSize" class="mr-2" style="max-width:100px;" />
+            <TextField v-model.number="pageSize" class="mr-2" style="max-width:100px;" />
             <Button class="mr-2" color="info" @click="pageSize+=1">+</Button>
             <Button color="info" @click="pageSize-=1">-</Button>
         </div>

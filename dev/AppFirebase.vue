@@ -25,8 +25,8 @@
     export default {
         name: "AppFirebase",
         props:{
-            nest:Number,
-            pageSize:Number,
+            nest:[String, Number],
+            pageSize:[String, Number],
         }
     }
 </script>

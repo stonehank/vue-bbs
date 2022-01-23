@@ -4,10 +4,10 @@
 
 <script>
     // import LeancloudLayer from '../src/layer/leancloud/ConvertLayer'
-    import ServerLayer from '../dist/backend/firebase'
+    import ServerLayer from '../src/layer/firebase/ConvertLayer'
     // import VueBbs from "../src/components/ServerlessBBSPanel";
-    import VueBbs from "../dist/lib/vue-bbs";
-    import registerServer from "../dist/registerServer";
+    import VueBbs from "../src/components/ServerlessBBSPanel";
+    import registerServer from "../src/registerServer";
     registerServer(VueBbs,ServerLayer)
     export default {
         inheritAttrs:false,
